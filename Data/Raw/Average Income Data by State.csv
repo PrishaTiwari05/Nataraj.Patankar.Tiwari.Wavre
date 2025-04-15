@@ -1,0 +1,63 @@
+"SAINC1 State annual personal income summary: personal income, population, per capita personal income",,,
+,,,
+State or DC,,,
+GeoFips,GeoName,Year,Per capita personal income (dollars)
+00000,United States,2023,69418.00
+01000,Alabama,2023,54112.00
+02000,Alaska *,2023,71309.00
+04000,Arizona,2023,62194.00
+05000,Arkansas,2023,57603.00
+06000,California,2023,80771.00
+08000,Colorado,2023,79746.00
+09000,Connecticut,2023,89307.00
+10000,Delaware,2023,66557.00
+11000,District of Columbia,2023,105518.00
+12000,Florida,2023,67821.00
+13000,Georgia,2023,59691.00
+15000,Hawaii *,2023,65888.00
+16000,Idaho,2023,59192.00
+17000,Illinois,2023,71716.00
+18000,Indiana,2023,61083.00
+19000,Iowa,2023,62557.00
+20000,Kansas,2023,65869.00
+21000,Kentucky,2023,55063.00
+22000,Louisiana,2023,58661.00
+23000,Maine,2023,64922.00
+24000,Maryland,2023,74945.00
+25000,Massachusetts,2023,89760.00
+26000,Michigan,2023,60865.00
+27000,Minnesota,2023,72366.00
+28000,Mississippi,2023,49593.00
+29000,Missouri,2023,62484.00
+30000,Montana,2023,65075.00
+31000,Nebraska,2023,71006.00
+32000,Nevada,2023,65822.00
+33000,New Hampshire,2023,78936.00
+34000,New Jersey,2023,81325.00
+35000,New Mexico,2023,55166.00
+36000,New York,2023,81630.00
+37000,North Carolina,2023,61579.00
+38000,North Dakota,2023,71574.00
+39000,Ohio,2023,61297.00
+40000,Oklahoma,2023,60395.00
+41000,Oregon,2023,67514.00
+42000,Pennsylvania,2023,68649.00
+44000,Rhode Island,2023,67105.00
+45000,South Carolina,2023,57180.00
+46000,South Dakota,2023,72546.00
+47000,Tennessee,2023,62039.00
+48000,Texas,2023,65768.00
+49000,Utah,2023,63700.00
+50000,Vermont,2023,66803.00
+51000,Virginia,2023,73681.00
+53000,Washington,2023,80472.00
+54000,West Virginia,2023,52813.00
+55000,Wisconsin,2023,64763.00
+56000,Wyoming,2023,81918.00
+,,,
+Legend/Footnotes,,,
+1. U.S. Census Bureau midyear population estimates.,,,
+2. Per capita personal income is total personal income divided by total midyear population.,,,
+* Estimates prior to 1950 are not available for Alaska and Hawaii.,,,
+Note. All dollar estimates are in millions of current dollars (not adjusted for inflation). Calculations are performed on unrounded data.,,,
+"  Last updated: March 28, 2025-- new statistics for 2024; revised statistics for 2020-2023.",,,
