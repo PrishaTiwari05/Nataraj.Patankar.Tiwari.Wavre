@@ -9,14 +9,23 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Number of EVs vs Average income of States
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a correlation plot. 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r analysis 1 part 2}
+#Loading Packages 
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(corrplot)
+library(readxl)
 
-```{r cars}
-summary(cars)
+here()
+
+#Cleaning Data
+EV_Data_PT <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
+
 ```
 
 ## Including Plots
