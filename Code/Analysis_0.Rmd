@@ -23,6 +23,9 @@ library(tidyverse)
 library(lubridate)
 library(here)
 library(cowplot)
+install.packages("ggforce")
+library(ggforce)
+library(scales)
 library(dplyr)
 installed.packages("readxl")
 library("readxl")
@@ -44,13 +47,57 @@ getwd()
 LDVRegistration_AP <- read_excel(path=here("Data/Raw/2016-2023 LDV Registration Data.xlsx"))
 str(LDVRegistration_AP)
 # Creating GGPlot of Statewise Registrations
-Plot1 <- ggplot(LDVRegistration_AP, aes(x=Year, y= `Electric (EV)`, color =State))+
-geom_point()
-  print(Plot1)
+ggplot(LDVRegistration_AP, aes(x = Year, y = `Electric (EV)`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "EV Registrations by State (2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
 ```
 
 
 ```{r Datasets, echo=TRUE}
+
+LDVRegistration_AP <- LDVRegistration_AP %>%
+  mutate(`Electric (EV)` = as.numeric(gsub(",", "", `Electric (EV)`)),
+         facet_group = ifelse(State == "California", "California", "Other States"))
+
+# How many states per page, excluding California
+non_california <- LDVRegistration_AP %>% filter(State != "California")
+states <- unique(non_california$State)
+states_per_page <- 6
+num_pages <- ceiling(length(states) / states_per_page)
+
+# Plot each page
+for (i in 1:num_pages) {
+  data_page <- non_california %>%
+    filter(State %in% states[((i - 1) * states_per_page + 1):(i * states_per_page)])
+
+  print(
+    ggplot(data_page, aes(x = Year, y = `Electric (EV)`)) +
+      geom_line(color = "steelblue") +
+      facet_wrap_paginate(~State, ncol = 2, nrow = 3, page = 1) +
+      scale_y_continuous(limits = c(0, 250000)) +
+      labs(
+        title = paste("EV Registrations by State (Page", i, "of", num_pages, ")"),
+        x = "Year", y = "EV Registrations"
+      ) +
+      theme_minimal(base_size = 12)
+  )
+}
+
+# Plot California separately with full scale
+ggplot(filter(LDVRegistration_AP, State == "California"), 
+       aes(x = Year, y = `Electric (EV)`)) +
+  geom_line(color = "steelblue", size = 1) +
+  labs(
+    title = "EV Registrations in California (2016–2023)",
+    x = "Year", y = "EV Registrations"
+  ) +
+  theme_minimal(base_size = 12)
 
 ```
 
