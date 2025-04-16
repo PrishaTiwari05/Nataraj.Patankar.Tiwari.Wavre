@@ -35,7 +35,7 @@ Income_Data_PT <- read.csv("Data/Raw/Average Income Data by State.csv")
 Income_Clean <- Income_Data_PT %>%
   mutate(State = str_trim(str_remove(State, "\\*")))
 
-EV_vs_Income <- left_join(EV_Data_PT, Income_Clean, by = "State")
+EV_vs_Income <- full_join(EV_Data_PT, Income_Clean, by = "State", "Year")
 colnames(EV_vs_Income) [c(3,4,15,16)] <- c("EV", "PHEV", "Year","Avg_Income")
 
 EV_vs_Inc_clean <- EV_vs_Income %>%
