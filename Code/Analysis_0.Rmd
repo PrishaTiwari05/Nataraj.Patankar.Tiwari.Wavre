@@ -3,6 +3,8 @@ title: "Analysis_0"
 author: "Nataraj.Patankar.Tiwari.Wavre"
 date: "2025-04-16"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -21,6 +23,7 @@ library(tidyverse)
 library(lubridate)
 library(here)
 library(cowplot)
+library(dplyr)
 installed.packages("readxl")
 library("readxl")
 
@@ -33,15 +36,22 @@ theme_set(mytheme)
 getwd()
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
+## Importing LDV Registration Datasets:
 
 ```{r Datasets, echo=TRUE}
-#3
+#3 Importing LDV Registration Dataset
 
 LDVRegistration_AP <- read_excel(path=here("Data/Raw/2016-2023 LDV Registration Data.xlsx"))
-summary(LDVRegistration_AP)
+str(LDVRegistration_AP)
+
+```
+
+
+```{r Datasets, echo=TRUE}
+# Creating GGPlot of Statewise Registrations
+Plot1 <- ggplot(LDVRegistration_AP, aes(x=Year, y= `Electric (EV)`, color =State))+
+geom_point()
+  print(Plot1)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
