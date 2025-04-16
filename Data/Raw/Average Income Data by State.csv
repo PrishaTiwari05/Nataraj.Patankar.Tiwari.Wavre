@@ -1,63 +1,409 @@
-"SAINC1 State annual personal income summary: personal income, population, per capita personal income",,,
-,,,
-State or DC,,,
-GeoFips,GeoName,Year,Per capita personal income (dollars)
-00000,United States,2023,69418.00
-01000,Alabama,2023,54112.00
-02000,Alaska *,2023,71309.00
-04000,Arizona,2023,62194.00
-05000,Arkansas,2023,57603.00
-06000,California,2023,80771.00
-08000,Colorado,2023,79746.00
-09000,Connecticut,2023,89307.00
-10000,Delaware,2023,66557.00
-11000,District of Columbia,2023,105518.00
-12000,Florida,2023,67821.00
-13000,Georgia,2023,59691.00
-15000,Hawaii *,2023,65888.00
-16000,Idaho,2023,59192.00
-17000,Illinois,2023,71716.00
-18000,Indiana,2023,61083.00
-19000,Iowa,2023,62557.00
-20000,Kansas,2023,65869.00
-21000,Kentucky,2023,55063.00
-22000,Louisiana,2023,58661.00
-23000,Maine,2023,64922.00
-24000,Maryland,2023,74945.00
-25000,Massachusetts,2023,89760.00
-26000,Michigan,2023,60865.00
-27000,Minnesota,2023,72366.00
-28000,Mississippi,2023,49593.00
-29000,Missouri,2023,62484.00
-30000,Montana,2023,65075.00
-31000,Nebraska,2023,71006.00
-32000,Nevada,2023,65822.00
-33000,New Hampshire,2023,78936.00
-34000,New Jersey,2023,81325.00
-35000,New Mexico,2023,55166.00
-36000,New York,2023,81630.00
-37000,North Carolina,2023,61579.00
-38000,North Dakota,2023,71574.00
-39000,Ohio,2023,61297.00
-40000,Oklahoma,2023,60395.00
-41000,Oregon,2023,67514.00
-42000,Pennsylvania,2023,68649.00
-44000,Rhode Island,2023,67105.00
-45000,South Carolina,2023,57180.00
-46000,South Dakota,2023,72546.00
-47000,Tennessee,2023,62039.00
-48000,Texas,2023,65768.00
-49000,Utah,2023,63700.00
-50000,Vermont,2023,66803.00
-51000,Virginia,2023,73681.00
-53000,Washington,2023,80472.00
-54000,West Virginia,2023,52813.00
-55000,Wisconsin,2023,64763.00
-56000,Wyoming,2023,81918.00
-,,,
-Legend/Footnotes,,,
-1. U.S. Census Bureau midyear population estimates.,,,
-2. Per capita personal income is total personal income divided by total midyear population.,,,
-* Estimates prior to 1950 are not available for Alaska and Hawaii.,,,
-Note. All dollar estimates are in millions of current dollars (not adjusted for inflation). Calculations are performed on unrounded data.,,,
-"  Last updated: March 28, 2025-- new statistics for 2024; revised statistics for 2020-2023.",,,
+Year,State,Per capita personal income (dollars)
+2023,Alabama,54112
+2023,Alaska *,71309
+2023,Arizona,62194
+2023,Arkansas,57603
+2023,California,80771
+2023,Colorado,79746
+2023,Connecticut,89307
+2023,Delaware,66557
+2023,District of Columbia,105518
+2023,Florida,67821
+2023,Georgia,59691
+2023,Hawaii *,65888
+2023,Idaho,59192
+2023,Illinois,71716
+2023,Indiana,61083
+2023,Iowa,62557
+2023,Kansas,65869
+2023,Kentucky,55063
+2023,Louisiana,58661
+2023,Maine,64922
+2023,Maryland,74945
+2023,Massachusetts,89760
+2023,Michigan,60865
+2023,Minnesota,72366
+2023,Mississippi,49593
+2023,Missouri,62484
+2023,Montana,65075
+2023,Nebraska,71006
+2023,Nevada,65822
+2023,New Hampshire,78936
+2023,New Jersey,81325
+2023,New Mexico,55166
+2023,New York,81630
+2023,North Carolina,61579
+2023,North Dakota,71574
+2023,Ohio,61297
+2023,Oklahoma,60395
+2023,Oregon,67514
+2023,Pennsylvania,68649
+2023,Rhode Island,67105
+2023,South Carolina,57180
+2023,South Dakota,72546
+2023,Tennessee,62039
+2023,Texas,65768
+2023,Utah,63700
+2023,Vermont,66803
+2023,Virginia,73681
+2023,Washington,80472
+2023,West Virginia,52813
+2023,Wisconsin,64763
+2023,Wyoming,81918
+2022,Alabama,51660
+2022,Alaska *,68905
+2022,Arizona,58873
+2022,Arkansas,55299
+2022,California,76741
+2022,Colorado,76544
+2022,Connecticut,84777
+2022,Delaware,63890
+2022,District of Columbia,100153
+2022,Florida,64171
+2022,Georgia,57193
+2022,Hawaii *,62522
+2022,Idaho,56984
+2022,Illinois,68352
+2022,Indiana,58867
+2022,Iowa,61515
+2022,Kansas,62313
+2022,Kentucky,52615
+2022,Louisiana,55661
+2022,Maine,61620
+2022,Maryland,71013
+2022,Massachusetts,85712
+2022,Michigan,57907
+2022,Minnesota,69813
+2022,Mississippi,47086
+2022,Missouri,58986
+2022,Montana,61610
+2022,Nebraska,66923
+2022,Nevada,62493
+2022,New Hampshire,74952
+2022,New Jersey,77456
+2022,New Mexico,53069
+2022,New York,77382
+2022,North Carolina,58871
+2022,North Dakota,71042
+2022,Ohio,58301
+2022,Oklahoma,57943
+2022,Oregon,63986
+2022,Pennsylvania,65336
+2022,Rhode Island,64075
+2022,South Carolina,54378
+2022,South Dakota,69736
+2022,Tennessee,59099
+2022,Texas,62812
+2022,Utah,60607
+2022,Vermont,63523
+2022,Virginia,69673
+2022,Washington,75580
+2022,West Virginia,50131
+2022,Wisconsin,61851
+2022,Wyoming,76394
+2021,Alabama,50495
+2021,Alaska *,65608
+2021,Arizona,56963
+2021,Arkansas,52872
+2021,California,76887
+2021,Colorado,71676
+2021,Connecticut,81692
+2021,Delaware,59619
+2021,District of Columbia,97764
+2021,Florida,62238
+2021,Georgia,56079
+2021,Hawaii *,61051
+2021,Idaho,55408
+2021,Illinois,66612
+2021,Indiana,57254
+2021,Iowa,58195
+2021,Kansas,59013
+2021,Kentucky,51769
+2021,Louisiana,54948
+2021,Maine,59168
+2021,Maryland,69032
+2021,Massachusetts,83703
+2021,Michigan,56898
+2021,Minnesota,67452
+2021,Mississippi,46906
+2021,Missouri,56630
+2021,Montana,58973
+2021,Nebraska,63517
+2021,Nevada,60775
+2021,New Hampshire,73672
+2021,New Jersey,76040
+2021,New Mexico,50682
+2021,New York,76040
+2021,North Carolina,57023
+2021,North Dakota,65975
+2021,Ohio,57330
+2021,Oklahoma,54492
+2021,Oregon,62379
+2021,Pennsylvania,63779
+2021,Rhode Island,62898
+2021,South Carolina,53220
+2021,South Dakota,67014
+2021,Tennessee,57491
+2021,Texas,60192
+2021,Utah,58183
+2021,Vermont,60807
+2021,Virginia,66971
+2021,Washington,73628
+2021,West Virginia,48792
+2021,Wisconsin,60449
+2021,Wyoming,70962
+2020,Alabama,45843
+2020,Alaska *,61853
+2020,Arizona,52038
+2020,Arkansas,47100
+2020,California,70065
+2020,Colorado,64671
+2020,Connecticut,76779
+2020,Delaware,55497
+2020,District of Columbia,90691
+2020,Florida,56539
+2020,Georgia,51460
+2020,Hawaii *,56995
+2020,Idaho,49607
+2020,Illinois,61542
+2020,Indiana,51736
+2020,Iowa,52621
+2020,Kansas,55100
+2020,Kentucky,47052
+2020,Louisiana,50133
+2020,Maine,54295
+2020,Maryland,64840
+2020,Massachusetts,77470
+2020,Michigan,52787
+2020,Minnesota,61327
+2020,Mississippi,42446
+2020,Missouri,52143
+2020,Montana,53487
+2020,Nebraska,56745
+2020,Nevada,54656
+2020,New Hampshire,67535
+2020,New Jersey,70430
+2020,New Mexico,46483
+2020,New York,70395
+2020,North Carolina,51779
+2020,North Dakota,60368
+2020,Ohio,52839
+2020,Oklahoma,50020
+2020,Oregon,56594
+2020,Pennsylvania,60245
+2020,Rhode Island,59250
+2020,South Carolina,48769
+2020,South Dakota,59422
+2020,Tennessee,51945
+2020,Texas,54795
+2020,Utah,51741
+2020,Vermont,58131
+2020,Virginia,61400
+2020,Washington,67619
+2020,West Virginia,44867
+2020,Wisconsin,55428
+2020,Wyoming,65094
+2019,Alabama,42998
+2019,Alaska *,60504
+2019,Arizona,47718
+2019,Arkansas,43737
+2019,California,64219
+2019,Colorado,61278
+2019,Connecticut,74176
+2019,Delaware,53778
+2019,District of Columbia,83675
+2019,Florida,53666
+2019,Georgia,48529
+2019,Hawaii *,53940
+2019,Idaho,45880
+2019,Illinois,57738
+2019,Indiana,48270
+2019,Iowa,49674
+2019,Kansas,52156
+2019,Kentucky,43466
+2019,Louisiana,47015
+2019,Maine,49983
+2019,Maryland,61723
+2019,Massachusetts,72381
+2019,Michigan,48577
+2019,Minnesota,57903
+2019,Mississippi,39142
+2019,Missouri,48425
+2019,Montana,49654
+2019,Nebraska,53513
+2019,Nevada,51942
+2019,New Hampshire,63946
+2019,New Jersey,67518
+2019,New Mexico,43223
+2019,New York,66460
+2019,North Carolina,48374
+2019,North Dakota,56657
+2019,Ohio,49395
+2019,Oklahoma,48177
+2019,Oregon,52190
+2019,Pennsylvania,56139
+2019,Rhode Island,55123
+2019,South Carolina,46150
+2019,South Dakota,54408
+2019,Tennessee,48903
+2019,Texas,53271
+2019,Utah,48163
+2019,Vermont,54278
+2019,Virginia,58362
+2019,Washington,63431
+2019,West Virginia,42615
+2019,Wisconsin,52370
+2019,Wyoming,61853
+2018,Alabama,41324
+2018,Alaska *,58997
+2018,Arizona,45297
+2018,Arkansas,43031
+2018,California,60984
+2018,Colorado,57798
+2018,Connecticut,72159
+2018,Delaware,52670
+2018,District of Columbia,82272
+2018,Florida,51015
+2018,Georgia,46624
+2018,Hawaii *,51554
+2018,Idaho,43254
+2018,Illinois,56077
+2018,Indiana,46555
+2018,Iowa,48773
+2018,Kansas,50282
+2018,Kentucky,41658
+2018,Louisiana,45465
+2018,Maine,47729
+2018,Maryland,59915
+2018,Massachusetts,69191
+2018,Michigan,47089
+2018,Minnesota,56201
+2018,Mississippi,37624
+2018,Missouri,46680
+2018,Montana,47208
+2018,Nebraska,51436
+2018,Nevada,49289
+2018,New Hampshire,60335
+2018,New Jersey,64198
+2018,New Mexico,40976
+2018,New York,64229
+2018,North Carolina,46048
+2018,North Dakota,55173
+2018,Ohio,47821
+2018,Oklahoma,46030
+2018,Oregon,50209
+2018,Pennsylvania,54468
+2018,Rhode Island,52132
+2018,South Carolina,43817
+2018,South Dakota,51579
+2018,Tennessee,46449
+2018,Texas,51346
+2018,Utah,45463
+2018,Vermont,51691
+2018,Virginia,56130
+2018,Washington,59824
+2018,West Virginia,41001
+2018,Wisconsin,50520
+2018,Wyoming,59197
+2017,Alabama,39968
+2017,Alaska *,56500
+2017,Arizona,43255
+2017,Arkansas,41403
+2017,California,58214
+2017,Colorado,54176
+2017,Connecticut,69147
+2017,Delaware,49997
+2017,District of Columbia,79567
+2017,Florida,48447
+2017,Georgia,44836
+2017,Hawaii *,50506
+2017,Idaho,41197
+2017,Illinois,53056
+2017,Indiana,44568
+2017,Iowa,46767
+2017,Kansas,48271
+2017,Kentucky,40403
+2017,Louisiana,43486
+2017,Maine,45905
+2017,Maryland,58245
+2017,Massachusetts,66069
+2017,Michigan,45264
+2017,Minnesota,53826
+2017,Mississippi,36579
+2017,Missouri,44781
+2017,Montana,45369
+2017,Nebraska,49533
+2017,Nevada,46991
+2017,New Hampshire,57878
+2017,New Jersey,61704
+2017,New Mexico,39196
+2017,New York,62206
+2017,North Carolina,44219
+2017,North Dakota,51830
+2017,Ohio,46114
+2017,Oklahoma,43873
+2017,Oregon,47566
+2017,Pennsylvania,51886
+2017,Rhode Island,50414
+2017,South Carolina,42385
+2017,South Dakota,49408
+2017,Tennessee,44407
+2017,Texas,48524
+2017,Utah,43030
+2017,Vermont,50009
+2017,Virginia,54377
+2017,Washington,56800
+2017,West Virginia,38841
+2017,Wisconsin,48311
+2017,Wyoming,56378
+2016,Alabama,38704
+2016,Alaska *,55536
+2016,Arizona,41173
+2016,Arkansas,40181
+2016,California,55862
+2016,Colorado,51312
+2016,Connecticut,67551
+2016,Delaware,48186
+2016,District of Columbia,77500
+2016,Florida,45730
+2016,Georgia,42742
+2016,Hawaii *,48561
+2016,Idaho,39653
+2016,Illinois,51347
+2016,Indiana,43143
+2016,Iowa,45669
+2016,Kansas,46717
+2016,Kentucky,39319
+2016,Louisiana,42132
+2016,Maine,44234
+2016,Maryland,56606
+2016,Massachusetts,63476
+2016,Michigan,44080
+2016,Minnesota,51982
+2016,Mississippi,35638
+2016,Missouri,43826
+2016,Montana,43301
+2016,Nebraska,48688
+2016,Nevada,44715
+2016,New Hampshire,55677
+2016,New Jersey,59776
+2016,New Mexico,38474
+2016,New York,58400
+2016,North Carolina,42596
+2016,North Dakota,51298
+2016,Ohio,44574
+2016,Oklahoma,42053
+2016,Oregon,45467
+2016,Pennsylvania,50572
+2016,Rhode Island,48515
+2016,South Carolina,40752
+2016,South Dakota,48284
+2016,Tennessee,42938
+2016,Texas,45868
+2016,Utah,41295
+2016,Vermont,48827
+2016,Virginia,52656
+2016,Washington,54296
+2016,West Virginia,37075
+2016,Wisconsin,46595
+2016,Wyoming,53419

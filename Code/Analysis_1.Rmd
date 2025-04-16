@@ -5,8 +5,12 @@ date: "2025-04-16"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Number of EVs vs Number of Charging Stations
+
+In this part of our analysis, we explore  
+
+```{r analysis 1 part 1}
+#Loading Packages
 ```
 
 ## Number of EVs vs Average income of States
@@ -15,17 +19,34 @@ In this part of our analysis, we explore whether the average income of a state i
 
 ```{r analysis 1 part 2}
 #Loading Packages 
+library(dplyr)
 library(tidyverse)
 library(here)
 library(ggplot2)
 library(corrplot)
 library(readxl)
+library(stringr)
 
 here()
 
 #Cleaning Data
 EV_Data_PT <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
+Income_Data_PT <- read.csv("Data/Raw/Average Income Data by State.csv")
+Income_Clean <- Income_Data_PT %>%
+  mutate(State = str_trim(str_remove(State, "\\*")))
 
+EV_vs_Income <- left_join(EV_Data_PT, Income_Clean, by = "State")
+colnames(EV_vs_Income) [c(3,4,15,16)] <- c("EV", "PHEV", "Year","Avg_Income")
+
+EV_vs_Inc_clean <- EV_vs_Income %>%
+  select(Year, EV, PHEV, State, Avg_Income)
+
+#Correlation test
+EV.test <- cor.test(EV_vs_Inc_clean$EV, EV_vs_Inc_clean$Avg_Income)
+EV.test
+
+PHEV.test <- cor.test(EV_vs_Inc_clean$PHEV, EV_vs_Inc_clean$Avg_Income)
+PHEV.test
 ```
 
 ## Including Plots
