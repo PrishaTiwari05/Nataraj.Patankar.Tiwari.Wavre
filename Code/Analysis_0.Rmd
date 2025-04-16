@@ -65,13 +65,12 @@ LDVRegistration_AP <- LDVRegistration_AP %>%
   mutate(`Electric (EV)` = as.numeric(gsub(",", "", `Electric (EV)`)),
          facet_group = ifelse(State == "California", "California", "Other States"))
 
-# How many states per page, excluding California
 non_california <- LDVRegistration_AP %>% filter(State != "California")
 states <- unique(non_california$State)
 states_per_page <- 6
 num_pages <- ceiling(length(states) / states_per_page)
 
-# Plot each page
+
 for (i in 1:num_pages) {
   data_page <- non_california %>%
     filter(State %in% states[((i - 1) * states_per_page + 1):(i * states_per_page)])
@@ -89,7 +88,7 @@ for (i in 1:num_pages) {
   )
 }
 
-# Plot California separately with full scale
+# Plot California separately 
 ggplot(filter(LDVRegistration_AP, State == "California"), 
        aes(x = Year, y = `Electric (EV)`)) +
   geom_line(color = "steelblue", size = 1) +
@@ -109,11 +108,11 @@ library(dplyr)
 
 ev_stations <- stations %>%
   filter(Fuel.Type.Code == "ELEC") %>%
-  mutate(State = str_trim(toupper(State))) %>%  # Uppercase 2-letter codes and trim whitespace
+  mutate(State = str_trim(toupper(State))) %>%  
   group_by(State) %>%
   summarize(num_stations = n()) %>%
   arrange(num_stations) %>%
-  mutate(State = factor(State, levels = State))  # factor ordered for plotting
+  mutate(State = factor(State, levels = State))  
 
 ggplot(ev_stations, aes(x = State, y = num_stations)) +
   geom_col(fill = "forestgreen") +
