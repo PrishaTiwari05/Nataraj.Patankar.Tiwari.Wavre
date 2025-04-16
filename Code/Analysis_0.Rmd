@@ -43,15 +43,15 @@ getwd()
 
 LDVRegistration_AP <- read_excel(path=here("Data/Raw/2016-2023 LDV Registration Data.xlsx"))
 str(LDVRegistration_AP)
-
-```
-
-
-```{r Datasets, echo=TRUE}
 # Creating GGPlot of Statewise Registrations
 Plot1 <- ggplot(LDVRegistration_AP, aes(x=Year, y= `Electric (EV)`, color =State))+
 geom_point()
   print(Plot1)
+```
+
+
+```{r Datasets, echo=TRUE}
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
