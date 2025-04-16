@@ -15,16 +15,33 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r Packages and Theme, warning=FALSE}
+#1 Loading Packages
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
+installed.packages("readxl")
+library("readxl")
+
+#2 Setting Theme
+mytheme <- theme_grey(base_size = 14)+
+  theme(axis.text = element_text(color = "black"),legend.position = "bottom")
+theme_set(mytheme)
+
+# Getting Working Directory
+getwd()
 ```
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r Datasets, echo=TRUE}
+#3
+
+LDVRegistration_AP <- read_excel(path=here("Data/Raw/2016-2023 LDV Registration Data.xlsx"))
+summary(LDVRegistration_AP)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
