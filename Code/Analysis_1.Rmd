@@ -3,6 +3,8 @@ title: "Analysis_1"
 author: "Nataraj.Patankar.Tiwari.Wavre"
 date: "2025-04-16"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Number of EVs vs Number of Charging Stations
@@ -15,7 +17,7 @@ In this part of our analysis, we explore
 
 ## Number of EVs vs Average income of States
 
-In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a correlation plot. 
+In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
 ```{r analysis 1 part 2}
 #Loading Packages 
@@ -35,18 +37,30 @@ Income_Data_PT <- read.csv("Data/Raw/Average Income Data by State.csv")
 Income_Clean <- Income_Data_PT %>%
   mutate(State = str_trim(str_remove(State, "\\*")))
 
-EV_vs_Income <- full_join(EV_Data_PT, Income_Clean, by = "State", "Year")
-colnames(EV_vs_Income) [c(3,4,15,16)] <- c("EV", "PHEV", "Year","Avg_Income")
+EV_vs_Income <- left_join(EV_Data_PT, Income_Clean, by = c("State", "Year"))
+colnames(EV_vs_Income) [c(3,4,15)] <- c("EV", "PHEV","Avg_Income")
 
 EV_vs_Inc_clean <- EV_vs_Income %>%
-  select(Year, EV, PHEV, State, Avg_Income)
+  select(Year, State, EV, PHEV, Avg_Income) %>%
+  mutate(Total_EV = EV + PHEV)
 
 #Correlation test
-EV.test <- cor.test(EV_vs_Inc_clean$EV, EV_vs_Inc_clean$Avg_Income)
+EV.test <- cor.test(EV_vs_Inc_clean$Total_EV, EV_vs_Inc_clean$Avg_Income)
 EV.test
 
-PHEV.test <- cor.test(EV_vs_Inc_clean$PHEV, EV_vs_Inc_clean$Avg_Income)
-PHEV.test
+#Plotting the data
+ggplot(EV_vs_Inc_clean, aes(x = Avg_Income, y = Total_EV)) +
+  geom_point(alpha = 0.6, color = "steelblue") +
+  geom_smooth(method = "lm", se = TRUE, color = "darkred", linewidth = 1.2) +
+  labs(
+    title = "Relationship Between Average Income and EV Registrations",
+    subtitle = "Across States (Total EVs = EV + PHEV)",
+    x = "Average Income (USD)",
+    y = "Total EV Registrations"
+  ) +
+  ylim(0,250000) +
+  theme_minimal()
+
 ```
 
 ## Including Plots
