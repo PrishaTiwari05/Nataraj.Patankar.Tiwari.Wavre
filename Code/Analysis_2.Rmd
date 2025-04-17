@@ -27,16 +27,42 @@ EV_Registrations_PW <- read_excel(
   col_names = TRUE
 )
 
+Fuel_Stations_PW <- read.csv(
+file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
+stringsAsFactors = TRUE
+)
+
+
+```
+
+## Data cleaning
+
+```{r}
 EV_Registrations_Subset_PW <- EV_Registrations_PW %>%
   select(`Year`, `State`, `Electric (EV)`, `Plug-In Hybrid Electric (PHEV)`)
+
+# Keep only the required columns
+Fuel_Stations_PW <- Fuel_Stations_PW[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
+
+# Convert Open.Date to Date format and extract year
+Fuel_Stations_PW$Open.Date <- format(as.Date(Fuel_Stations_PW$Open.Date, format = "%m/%d/%Y"), "%Y")
+
 ```
+## Data Wrangling
 
-## Including Plots
+```{r}
 
-You can also embed plots, for example:
+# Adding a new column with EV + PHEV count. 
+EV_Registrations_Subset_PW$`Total EVs` <- 
+  EV_Registrations_Subset_PW$`Electric (EV)` + 
+  EV_Registrations_Subset_PW$`Plug-In Hybrid Electric (PHEV)`
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
+## Data Filter
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# Convert Open.Date to numeric 
+Fuel_Stations_PW$Open.Date <- as.numeric(Fuel_Stations_PW$Open.Date)
+
+# Filter for years 2016 to 2023
+Fuel_Stations_PW <- subset(Fuel_Stations_PW, Open.Date >= 2016 & Open.Date <= 2023)
