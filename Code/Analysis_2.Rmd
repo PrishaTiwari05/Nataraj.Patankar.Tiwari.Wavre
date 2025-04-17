@@ -44,11 +44,6 @@ EV_Registrations_Subset_PW <- EV_Registrations_PW %>%
 EV_Registrations_Subset_PW <- EV_Registrations_Subset_PW %>%
   arrange(Year)
 
-# Convert full state names to abbreviations
-EV_Registrations_Subset_PW$State <- state.abb[match(EV_Registrations_Subset_PW$State, state.name)]
-
-
-EV_Registrations_Subset_PW$State[EV_Registrations_Subset_PW$State == "District of Columbia"] <- "DC"
 ```
 
 ## Data cleaning and filtering of charging stations
@@ -63,6 +58,20 @@ Fuel_Stations_PW$Open.Date <- dmy(Fuel_Stations_PW$Open.Date)
 Fuel_Stations_PW$Open.Date <- year(Fuel_Stations_PW$Open.Date)
 
 Fuel_Stations_PW <- subset(Fuel_Stations_PW, Open.Date >= 2016 & Open.Date <= 2023)
+
+# First, ensure everything is uppercase and trimmed
+Fuel_Stations_PW$State <- toupper(trimws(Fuel_Stations_PW$State))
+
+# Create a lookup: abbreviation → full name
+state_abbr <- state.abb
+state_names <- state.name
+
+# Add DC manually
+state_abbr <- c(state_abbr, "DC")
+state_names <- c(state_names, "District of Columbia")
+
+# Map the abbreviations to full names
+Fuel_Stations_PW$State <- state_names[match(Fuel_Stations_PW$State, state_abbr)]
 ```
 
 ## Data Wrangling
@@ -81,5 +90,26 @@ EV_Registrations_Subset_PW$`Total EVs` <-
 Station_Counts <- Fuel_Stations_PW %>%
   group_by(Open.Date, State) %>%
   summarise(Number_of_Stations = n(), .groups = 'drop')
+
+```
+
+```{r}
+
+# 1. Summarize station counts by Year and State
+Fuel_Stations_Summary <- Fuel_Stations_PW %>%
+  group_by(Open.Date, State) %>%
+  summarise(Number_of_Stations = n(), .groups = 'drop') %>%
+  rename(Year = Open.Date)  # Rename for joining
+
+# 2. Select required columns from EV registrations
+EV_Summary <- EV_Registrations_Subset_PW %>%
+  select(Year, State, `Total EVs`)
+
+# 3. Join on Year and State
+Combined_Data <- left_join(
+  Fuel_Stations_Summary,
+  EV_Summary,
+  by = c("Year", "State")
+)
 
 ```
