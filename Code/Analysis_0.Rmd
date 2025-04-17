@@ -23,12 +23,15 @@ library(tidyverse)
 library(lubridate)
 library(here)
 library(cowplot)
-install.packages("ggforce")
+#install.packages("ggforce")
 library(ggforce)
 library(scales)
 library(dplyr)
-installed.packages("readxl")
+#installed.packages("readxl")
 library("readxl")
+library(sf)
+library(leaflet)
+library(mapview); mapviewOptions(fgb = FALSE)
 
 #2 Setting Theme
 mytheme <- theme_grey(base_size = 14)+
@@ -127,6 +130,30 @@ ggplot(ev_stations, aes(x = State, y = num_stations)) +
 
 ```
 
+```{r maps}
+#4 Creating a map of Charging Stations
+
+#Reading Datafile
+States_sf <- st_read( here('./Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
+st_crs(States_sf)
+
+#Showing the Map containing US States
+myMap_States <- mapview(States_sf)
+myMap_States
+
+# Reading Charging Station Data
+str(stations)
+
+ev_stations2 <- stations %>%
+  filter(Fuel.Type.Code == "ELEC")
+
+#Stations.sf <- ev_stations2%>%
+#  st_as_sf(
+#    coords = c('Longitude','Latitude'),
+#    crs=4269
+#  )
+
+```
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
