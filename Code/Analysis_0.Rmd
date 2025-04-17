@@ -144,14 +144,23 @@ myMap_States
 # Reading Charging Station Data
 str(stations)
 
+#Selecting required columns and Removing Rows which do not have valid Latitude and Logitude data
 ev_stations2 <- stations %>%
-  filter(Fuel.Type.Code == "ELEC")
+  filter(Fuel.Type.Code == "ELEC")%>%
+  select(Fuel.Type.Code, Latitude, Longitude)%>%
+  filter(!is.na(Longitude), !is.na(Latitude))
 
-#Stations.sf <- ev_stations2%>%
-#  st_as_sf(
-#    coords = c('Longitude','Latitude'),
-#    crs=4269
-#  )
+Stations.sf <- ev_stations2%>%
+  st_as_sf(
+    coords = c('Longitude','Latitude'),
+    crs=4269
+  )
+
+Plot_EVStationLocations <- ggplot()+
+  geom_sf(data = States_sf, fill="white", size = 0.5) +
+  geom_sf(data = Stations.sf, aes(color = "red"), size = 0.2)+
+  ggtitle("EV Station Locations in the US")
+Plot_EVStationLocations
 
 ```
 
