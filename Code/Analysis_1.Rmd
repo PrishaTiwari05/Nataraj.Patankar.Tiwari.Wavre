@@ -108,5 +108,3 @@ ggplot(EV_vs_Pop_clean, aes(x = Population, y = Total_EV)) +
   theme_minimal()
 
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
