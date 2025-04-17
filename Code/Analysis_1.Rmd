@@ -37,6 +37,8 @@ Income_Data_PT <- read.csv("Data/Raw/Average Income Data by State.csv")
 Income_Clean <- Income_Data_PT %>%
   mutate(State = str_trim(str_remove(State, "\\*")))
 
+write.csv(Income_Clean, "Data/Processed/Avg_Income_Clean.csv", row.names = FALSE)
+
 EV_vs_Income <- left_join(EV_Data_PT, Income_Clean, by = c("State", "Year"))
 colnames(EV_vs_Income) [c(3,4,15)] <- c("EV", "PHEV","Avg_Income")
 
@@ -77,6 +79,8 @@ Pop_clean <- Pop_Data_PT %>%
   pivot_longer(cols = starts_with("Pop_"), names_to = "Year", names_prefix = "Pop_", values_to = "Population") %>%
   select(Year, State, Population) %>%
   mutate(Year = as.numeric(Year))
+
+write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
   
 EV_vs_Pop <- left_join(EV_Data_PT, Pop_clean, by = c("Year", "State"))
 colnames(EV_vs_Pop) [c(3,4)] <- c("EV", "PHEV")
