@@ -19,7 +19,7 @@ In this part of our analysis, we explore
 
 In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
-```{r analysis 1 part 2}
+```{r analysis 1 part 2, warning=FALSE, error=FALSE, message=FALSE}
 #Loading Packages 
 library(dplyr)
 library(tidyverse)
@@ -36,6 +36,8 @@ EV_Data_PT <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
 Income_Data_PT <- read.csv("Data/Raw/Average Income Data by State.csv")
 Income_Clean <- Income_Data_PT %>%
   mutate(State = str_trim(str_remove(State, "\\*")))
+
+write.csv(Income_Clean, "Data/Processed/Avg_Income_Clean.csv", row.names = FALSE)
 
 EV_vs_Income <- left_join(EV_Data_PT, Income_Clean, by = c("State", "Year"))
 colnames(EV_vs_Income) [c(3,4,15)] <- c("EV", "PHEV","Avg_Income")
@@ -63,12 +65,46 @@ ggplot(EV_vs_Inc_clean, aes(x = Avg_Income, y = Total_EV)) +
 
 ```
 
-## Including Plots
+## Number of EVs vs Population of States
 
-You can also embed plots, for example:
+In this part of our analysis, we explore whether the population of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r analysis 1 part 3}
+#Cleaning Data
+EV_Data_PT <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
+Pop_Data_PT <- read_excel("Data/Raw/Population 2020-2024.xlsx")
+colnames(Pop_Data_PT) [c(2,3,4,5)] <- c("Pop_2020","Pop_2021","Pop_2022","Pop_2023")
+
+Pop_clean <- Pop_Data_PT %>%
+  pivot_longer(cols = starts_with("Pop_"), names_to = "Year", names_prefix = "Pop_", values_to = "Population") %>%
+  select(Year, State, Population) %>%
+  mutate(Year = as.numeric(Year))
+
+write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
+  
+EV_vs_Pop <- left_join(EV_Data_PT, Pop_clean, by = c("Year", "State"))
+colnames(EV_vs_Pop) [c(3,4)] <- c("EV", "PHEV")
+
+EV_vs_Pop_clean <- EV_vs_Pop %>%
+  select(Year, State, EV, PHEV, Population) %>%
+   mutate(Total_EV = EV + PHEV)
+
+#Correlation test
+Pop.test <- cor.test(EV_vs_Pop_clean$Total_EV, EV_vs_Pop_clean$Population)
+Pop.test
+
+#Plotting the data
+ggplot(EV_vs_Pop_clean, aes(x = Population, y = Total_EV)) +
+  geom_point(alpha = 0.8, color = "coral") +
+  geom_smooth(method = "lm", se = TRUE, color = "navy", linewidth = 1.2) +
+  labs(
+    title = "Relationship Between Population and EV Registrations",
+    subtitle = "Across States (Total EVs = EV + PHEV)",
+    x = "Population",
+    y = "Total EV Registrations"
+  ) +
+   ylim(0,250000) +
+  xlim(0,30000000) +
+  theme_minimal()
+
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
