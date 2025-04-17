@@ -35,19 +35,36 @@ stringsAsFactors = TRUE
 
 ```
 
-## Data cleaning
+## Data cleaning and filtering of EV registration
 
 ```{r}
 EV_Registrations_Subset_PW <- EV_Registrations_PW %>%
   select(`Year`, `State`, `Electric (EV)`, `Plug-In Hybrid Electric (PHEV)`)
 
+EV_Registrations_Subset_PW <- EV_Registrations_Subset_PW %>%
+  arrange(Year)
+
+# Convert full state names to abbreviations
+EV_Registrations_Subset_PW$State <- state.abb[match(EV_Registrations_Subset_PW$State, state.name)]
+
+
+EV_Registrations_Subset_PW$State[EV_Registrations_Subset_PW$State == "District of Columbia"] <- "DC"
+```
+
+## Data cleaning and filtering of charging stations
+
+```{r}
+
 # Keep only the required columns
 Fuel_Stations_PW <- Fuel_Stations_PW[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
 
-# Convert Open.Date to Date format and extract year
-Fuel_Stations_PW$Open.Date <- format(as.Date(Fuel_Stations_PW$Open.Date, format = "%m/%d/%Y"), "%Y")
+Fuel_Stations_PW$Open.Date <- dmy(Fuel_Stations_PW$Open.Date)
 
+Fuel_Stations_PW$Open.Date <- year(Fuel_Stations_PW$Open.Date)
+
+Fuel_Stations_PW <- subset(Fuel_Stations_PW, Open.Date >= 2016 & Open.Date <= 2023)
 ```
+
 ## Data Wrangling
 
 ```{r}
@@ -58,11 +75,11 @@ EV_Registrations_Subset_PW$`Total EVs` <-
   EV_Registrations_Subset_PW$`Plug-In Hybrid Electric (PHEV)`
 
 ```
-## Data Filter
 
 ```{r}
-# Convert Open.Date to numeric 
-Fuel_Stations_PW$Open.Date <- as.numeric(Fuel_Stations_PW$Open.Date)
 
-# Filter for years 2016 to 2023
-Fuel_Stations_PW <- subset(Fuel_Stations_PW, Open.Date >= 2016 & Open.Date <= 2023)
+Station_Counts <- Fuel_Stations_PW %>%
+  group_by(Open.Date, State) %>%
+  summarise(Number_of_Stations = n(), .groups = 'drop')
+
+```
