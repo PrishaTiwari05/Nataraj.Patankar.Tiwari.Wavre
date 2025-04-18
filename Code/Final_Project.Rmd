@@ -45,7 +45,7 @@ LDV_Data <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
 colnames(LDV_Data) [c(3,4)] <- c("EV", "PHEV")
 LDV_Clean <- LDV_Data %>%
   mutate(Total_EV = EV + PHEV) %>%
-  select(Year, State, Total_EV, EV, PHEV) %>%
+  select(Year, State, Total_EV, EV, PHEV)
 
 #Income Data
 Income_Data <- read.csv("Data/Raw/Average Income Data by State.csv")
@@ -64,14 +64,8 @@ Pop_clean <- Pop_Data %>%
   mutate(Year = as.numeric(Year))
 
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
+
+#Fuel Stations 
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## 
