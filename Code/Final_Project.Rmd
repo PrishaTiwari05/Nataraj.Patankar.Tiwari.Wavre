@@ -11,13 +11,10 @@ editor_options:
 
 
 ## Background
-The global transition toward electric vehicles (EVs) is accelerating, driven by government policies, technological advancements, and environmental concerns. At the same time, fuel station infrastructure in the U.S. plays a crucial role in supporting both traditional internal combustion engine (ICE) vehicles and the growth of EV fleet.  Additionally, EVs as a new and expensive technology may find better uptake in areas with higher purchasing power, larger population and better access to charging stations.
+The global transition toward electric vehicles (EVs) is accelerating, driven by government policies, technological advancements, and environmental concerns. At the same time, fuel station infrastructure in the U.S. plays a crucial role in supporting both traditional internal combustion engine (ICE) vehicles and the growth of EV fleet. Additionally, EVs as a new and expensive technology may find better uptake in areas with higher purchasing power, larger population and better access to charging stations.
 
 ##Motivation
-Understanding the relationship between EV sales trends and fuel station installations is critical for infrastructure planning, policy development, and investment strategies.
-As EV adoption increases, the demand for traditional gas stations is expected to decline, while the need for EV charging infrastructure grows.
-Analyzing these trends can provide insights into how the U.S. should strategically adapt it’s refueling infrastructure to support the clean energy transition.
-Analyzing population and income will help us make decisions on whether we should site EV charging stations based on these parameters.
+Understanding the relationship between EV sales trends and fuel station installations is critical for infrastructure planning, policy development, and investment strategies. As EV adoption increases, the demand for traditional gas stations is expected to decline, while the need for EV charging infrastructure grows. Analyzing these trends can provide insights into how the U.S. should strategically adapt it’s refueling infrastructure to support the clean energy transition. Analyzing population and income will help us make decisions on whether we should site EV charging stations based on these parameters.
 
 ## Information on Datasets
 US DOE – Energy Efficiency and Renewable Energy's Alternative Fuels Dataset
