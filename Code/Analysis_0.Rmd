@@ -150,6 +150,8 @@ ev_stations2 <- stations %>%
   select(Fuel.Type.Code, Latitude, Longitude)%>%
   filter(!is.na(Longitude), !is.na(Latitude))
 
+write.csv(ev_stations2, "Data/Processed/EVStation_Locations.csv", row.names = FALSE)
+
 Stations.sf <- ev_stations2%>%
   st_as_sf(
     coords = c('Longitude','Latitude'),
