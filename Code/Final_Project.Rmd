@@ -41,7 +41,11 @@ library(mapview); mapviewOptions(fgb = FALSE)
 ```{r datasets, message=FALSE, warning=FALSE}
 #EV Registration Data
 LDV_Data <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
+
+#Renaming columns 
 colnames(LDV_Data) [c(3,4)] <- c("EV", "PHEV")
+
+#Selecting and creating columns
 LDV_Clean <- LDV_Data %>%
   mutate(Total_EV = EV + PHEV) %>%
   select(Year, State, Total_EV, EV, PHEV)
@@ -50,6 +54,8 @@ LDV_Clean <- LDV_Data %>%
 
 #Income Data
 Income_Data <- read.csv("Data/Raw/Average Income Data by State.csv")
+
+#Cleaning data
 Income_Clean <- Income_Data %>%
   mutate(State = str_trim(str_remove(State, "\\*")))
 
@@ -57,6 +63,8 @@ Income_Clean <- Income_Data %>%
 
 #Population Data
 Pop_Data <- read_excel("Data/Raw/Population 2020-2024.xlsx")
+
+#Renaming the columns
 colnames(Pop_Data) [c(2,3,4,5)] <- c("Pop_2020","Pop_2021","Pop_2022","Pop_2023")
 
 Pop_clean <- Pop_Data %>%
@@ -68,10 +76,9 @@ Pop_clean <- Pop_Data %>%
 
 #Fuel Stations 
 Fuel_Stations <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
-stringsAsFactors = TRUE
-)
+stringsAsFactors = TRUE)
 
-# Keep only the required columns
+#Selecting columns
 Fuel_Stations <- Fuel_Stations[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
 
 #Converting the date format to dmy and retaining year of installation of the station
