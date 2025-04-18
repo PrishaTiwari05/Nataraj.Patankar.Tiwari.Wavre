@@ -68,4 +68,18 @@ Pop_clean <- Pop_Data %>%
 #Fuel Stations 
 ```
 
-## 
+## Creating Data Plots
+```{r}
+# Creating GGPlot of Statewise Total EV Registrations
+ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "Total EV Registrations by State (2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
