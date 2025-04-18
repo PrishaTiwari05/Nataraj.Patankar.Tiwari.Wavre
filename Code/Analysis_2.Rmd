@@ -13,6 +13,10 @@ library(tidyverse)
 library(here)
 library(readxl)
 library(dplyr)
+library(purrr)
+library(broom)
+library(tidyr)
+library(ggplot2)
 ```
 
 ## R Markdown
@@ -106,10 +110,88 @@ EV_Summary <- EV_Registrations_Subset_PW %>%
   select(Year, State, `Total EVs`)
 
 # 3. Join on Year and State
-Combined_Data <- left_join(
+Fuel_Station_and_Registrations_Combined <- left_join(
   Fuel_Stations_Summary,
   EV_Summary,
   by = c("Year", "State")
 )
+
+```
+
+##Putting processed data into folder
+```{r}
+
+write.csv(EV_Summary, "Data/Processed/EV_Summary.csv", row.names = FALSE)
+
+write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
+
+```
+
+
+##Data analysis and linear regression
+```{r}
+# Step 1: Clean data
+df <- Fuel_Station_and_Registrations_Combined %>%
+  filter(!is.na(`Total EVs`), !is.na(Number_of_Stations)) %>%
+  rename(Total_EVs = `Total EVs`)
+
+# Step 2: Estimate EV registration growth for each state
+ev_projections <- df %>%
+  group_by(State) %>%
+  do({
+    model <- lm(Total_EVs ~ Year, data = .)
+    new_years <- data.frame(Year = 2024:2026)
+    preds <- predict(model, newdata = new_years)
+    data.frame(State = unique(.$State), Year = new_years$Year, Total_EVs = preds)
+  }) %>%
+  ungroup()
+
+# Step 3: Predict Number of Stations for projected EVs
+station_predictions <- df %>%
+  group_by(State) %>%
+  do({
+    model <- lm(Number_of_Stations ~ Total_EVs, data = .)
+    new_data <- ev_projections %>% filter(State == unique(.$State))
+    new_data$Predicted_Stations <- predict(model, newdata = new_data)
+    new_data
+  }) %>%
+  ungroup()
+
+# Step 4: Final output
+Predictions_2024_2026 <- station_predictions %>%
+  select(State, Year, Total_EVs, Predicted_Stations)
+
+head(Predictions_2024_2026)
+```
+
+##Graph plotting
+```{r}
+
+# Combine original with future predictions
+historical_data <- Fuel_Station_and_Registrations_Combined %>%
+  select(State, Year, `Total EVs`, Number_of_Stations) %>%
+  mutate(Source = "Historical")
+
+predicted_data <- station_predictions %>%
+  rename(Number_of_Stations = Predicted_Stations) %>%
+  mutate(Source = "Projected")
+
+combined_plot_data <- bind_rows(
+  historical_data,
+  predicted_data
+)
+
+ggplot(combined_plot_data, aes(x = `Total EVs`, y = Number_of_Stations, color = Source)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ State, scales = "free") +
+  labs(
+    title = "EV Stations vs. Total EV Registrations (2016–2026)",
+    x = "Total EV Registrations",
+    y = "Number of EV Stations",
+    color = "Data Type"
+  ) +
+  theme_minimal() +
+  theme(strip.text = element_text(face = "bold", size = 10))
 
 ```
