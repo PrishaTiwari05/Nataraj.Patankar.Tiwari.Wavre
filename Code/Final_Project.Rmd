@@ -111,6 +111,45 @@ Fuel_Stations_Summary <- Fuel_Stations_PW %>%
 ```
 
 ## Creating Data Plots
+
+```{r}
+#Plots of EV registrations
+
+ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "EV Registrations by State (2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
+
+LDV_Clean %>%
+  filter(State != "California") %>%
+  ggplot(aes(x = Year, y = `Total_EV`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "EV Registrations by State (Excl. California, 2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
+
+# Plot California separately 
+ggplot(filter(LDV_Clean, State == "California"), 
+       aes(x = Year, y = `Total_EV`)) +
+  geom_line(color = "steelblue", size = 1) +
+  labs(
+    title = "EV Registrations in California (2016–2023)",
+    x = "Year", y = "EV Registrations"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+
 ```{r}
 # Creating GGPlot of Statewise Total EV Registrations
 ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
