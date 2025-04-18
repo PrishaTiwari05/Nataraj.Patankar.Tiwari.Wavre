@@ -38,7 +38,6 @@ library(mapview); mapviewOptions(fgb = FALSE)
 
 ## Importing and Cleaning Datasets
 
-
 ```{r datasets, message=FALSE, warning=FALSE}
 #EV Registration Data
 LDV_Data <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
@@ -46,6 +45,8 @@ colnames(LDV_Data) [c(3,4)] <- c("EV", "PHEV")
 LDV_Clean <- LDV_Data %>%
   mutate(Total_EV = EV + PHEV) %>%
   select(Year, State, Total_EV, EV, PHEV)
+
+#write.csv(LDV_Clean, "Data/Processed/LDV_Clean.csv", row.names = FALSE)
 
 #Income Data
 Income_Data <- read.csv("Data/Raw/Average Income Data by State.csv")
@@ -66,6 +67,10 @@ Pop_clean <- Pop_Data %>%
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
 
 #Fuel Stations 
+Fuel_Stations <- read.csv("Data/Raw/Fuel_Stations_Historical_Data.csv")
+
+
+
 ```
 
 ## Creating Data Plots
