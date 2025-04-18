@@ -64,32 +64,28 @@ ggplot(LDVRegistration_AP, aes(x = Year, y = `Electric (EV)`, color = State)) +
 
 ```{r Datasets, echo=TRUE}
 
-LDVRegistration_AP <- LDVRegistration_AP %>%
-  mutate(`Electric (EV)` = as.numeric(gsub(",", "", `Electric (EV)`)),
-         facet_group = ifelse(State == "California", "California", "Other States"))
+LDVRegistration_AP %>%
+  filter(State != "California") %>%
+  ggplot(aes(x = Year, y = `Electric (EV)`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "EV Registrations by State (Excl. California, 2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
 
-non_california <- LDVRegistration_AP %>% filter(State != "California")
-states <- unique(non_california$State)
-states_per_page <- 6
-num_pages <- ceiling(length(states) / states_per_page)
-
-
-for (i in 1:num_pages) {
-  data_page <- non_california %>%
-    filter(State %in% states[((i - 1) * states_per_page + 1):(i * states_per_page)])
-
-  print(
-    ggplot(data_page, aes(x = Year, y = `Electric (EV)`)) +
-      geom_line(color = "steelblue") +
-      facet_wrap_paginate(~State, ncol = 2, nrow = 3, page = 1) +
-      scale_y_continuous(limits = c(0, 250000)) +
-      labs(
-        title = paste("EV Registrations by State (Page", i, "of", num_pages, ")"),
-        x = "Year", y = "EV Registrations"
-      ) +
-      theme_minimal(base_size = 12)
-  )
-}
+ggplot(filter(LDVRegistration_AP, State != "California"), 
+       aes(x = Year, y = `Electric (EV)`, color = State)) +
+  geom_line(size = 1) +
+  labs(
+    title = "EV Registrations by State (Excl. California, 2016–2023)",
+    x = "Year",
+    y = "Number of EVs Registered",
+    color = "State"
+  ) +
+  theme_minimal(base_size = 14)
 
 # Plot California separately 
 ggplot(filter(LDVRegistration_AP, State == "California"), 
@@ -102,6 +98,7 @@ ggplot(filter(LDVRegistration_AP, State == "California"),
   theme_minimal(base_size = 12)
 
 ```
+
 
 ```{r}
 stations <- read.csv("Data/Raw/Charging Station Data.csv")
@@ -181,7 +178,7 @@ Plot_EVStationLocations
 States_sf2 <- st_read( here('./Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
 
 bbox_us2 <- st_bbox(c(xmin = -125, xmax = -66, ymin = 24, ymax = 50), crs = st_crs(States_sf2))
-States_sf_cropped2 <- st_crop(States_sf, bbox_us)
+States_sf_cropped2 <- st_crop(States_sf, bbox_us2)
 
 mapviewOptions(basemaps = "OpenStreetMap")
 mapview(States_sf_cropped2)
@@ -201,7 +198,7 @@ ev_stations3 <- stations %>%
 
 Stations.sf2 <- ev_stations3%>%
   st_as_sf(
-    coords = c('Longitude','Latitude'),
+     coords = c('Longitude','Latitude'),
     crs=4269
   )
 
