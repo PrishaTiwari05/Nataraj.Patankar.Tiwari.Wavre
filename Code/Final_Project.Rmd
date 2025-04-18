@@ -66,40 +66,38 @@ Pop_clean <- Pop_Data %>%
 
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
 
-#Fuel Stations 
+#Fuel Stations Data 
 Fuel_Stations <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
 stringsAsFactors = TRUE
 )
 
-# Keep only the required columns
-Fuel_Stations <- Fuel_Stations[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
-
-#Converting the date format to dmy and retaining year of installation of the station
-Fuel_Stations$Open.Date <- dmy(Fuel_Stations$Open.Date)
-Fuel_Stations$Open.Date <- year(Fuel_Stations$Open.Date)
-Fuel_Stations <- subset(Fuel_Stations, Open.Date >= 2016 & Open.Date <= 2023)
-
-#Converting all the state accronyms to full state names 
-
-Fuel_Stations$State <- toupper(trimws(Fuel_Stations$State)) # First, ensure everything is uppercase and trimmed
-
-state_abbr <- state.abb # Create a lookup: abbreviation → full name
-state_names <- state.name 
-
-state_abbr <- c(state_abbr, "DC")
-state_names <- c(state_names, "District of Columbia") # Adding DC manually
-
-Fuel_Stations$State <- state_names[match(Fuel_Stations$State, state_abbr)] # Mapping the abbreviations to full names
-
-# Grouping the stations as per states and year and renaming the processed file
-
-Fuel_Stations_Summary <- Fuel_Stations_PW %>%
-  group_by(Open.Date, State) %>%
-  summarise(Number_of_Stations = n(), .groups = 'drop') %>%
-  rename(Year = Open.Date)  # Rename for joining
+Fuel_Stations_Summary <- Fuel_Stations %>%
+  select(Station.Name, State, Latitude, Longitude, Open.Date) %>%
+  mutate(
+    Open.Date = year(dmy(Open.Date)),
+    State = toupper(trimws(State)),
+    # Full state name mapping including DC
+    State = {
+      abbr <- c(state.abb, "DC")
+      names <- c(state.name, "District of Columbia")
+      names[match(State, abbr)]
+    }
+  ) %>%
+  filter(Open.Date >= 2016 & Open.Date <= 2023) %>%
+  group_by(Year = Open.Date, State) %>%
+  summarise(Number_of_Stations = n(), .groups = 'drop')
 
 #write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
+```
 
+##Combining Data Sets
+```{r}
+EV_Summary <- LDV_Clean %>%
+  select(Year, State, `Total_EV`)
+
+Fuel_Station_and_Registrations_Combined <- left_join(
+  Fuel_Stations_Summary, EV_Summary, by = c("Year", "State")
+)
 
 ```
 
