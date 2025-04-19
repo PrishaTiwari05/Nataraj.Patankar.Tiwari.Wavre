@@ -8,28 +8,20 @@ editor_options:
 ---
 
 ## Introduction
-
+Electric vehicles (EVs) are rapidly transforming the U.S. transportation landscape, driven by growing concerns over climate change, rising fuel prices, and supportive policy incentives. As the market expands, understanding the factors that are influencing the adoption of EVs is critical for designing equitable and effective transportation policies.
 
 ## Background
-The global transition toward electric vehicles (EVs) is accelerating, driven by government policies, technological advancements, and environmental concerns. At the same time, fuel station infrastructure in the U.S. plays a crucial role in supporting both traditional internal combustion engine (ICE) vehicles and the growth of EV fleet. Additionally, EVs as a new and expensive technology may find better uptake in areas with higher purchasing power, larger population and better access to charging stations.
+The global transition toward EVs is accelerating, driven by government policies, technological advancements, and increasing environmental awareness. Alongside these developments, fueling infrastructure in the U.S. continues to play a critical role, both in supporting traditional internal combustion engine (ICE) vehicles and facilitating the growth of the EV market. Additionally, as EVs remain relatively new and expensive technology, areas with higher purchasing power, larger populations, and greater access to charging infrastructure may experience faster and more substantial adoption rates.
 
-##Motivation
-Understanding the relationship between EV sales trends and fuel station installations is critical for infrastructure planning, policy development, and investment strategies. As EV adoption increases, the demand for traditional gas stations is expected to decline, while the need for EV charging infrastructure grows. Analyzing these trends can provide insights into how the U.S. should strategically adapt it’s refueling infrastructure to support the clean energy transition. Analyzing population and income will help us make decisions on whether we should site EV charging stations based on these parameters.
+## Motivation
+Analyzing the relationship between EV sales trends and fuel station infrastructure is essential for effective infrastructure planning, informed policymaking, and targeted investment strategies. As EV adoption accelerates, the demand for traditional gas stations is expected to decline, accompanied by a corresponding rise in the need for robust EV charging infrastructure. Understanding these evolving trends can guide strategic decisions on how the U.S. can best adapt its fueling networks to support the clean energy transition. Furthermore, examining demographic factors such as population density and income levels can help determine optimal locations for deploying EV charging stations.
 
 ## Information on Datasets
-US DOE – Energy Efficiency and Renewable Energy's Alternative Fuels Dataset
-The dataset provides alternative fueling station counts by state and fuel type.
-
-US BEA - State annual personal income summary: personal income, population, per capita personal income (2016-2023) 
-
-US Census - State Population Totals (2020-2024)
-
-US DOE – Energy Efficiency and Renewable Energy's Alternative Fuels Dataset
-The dataset provides Vehicle Registration Counts by State
-
-US Census - Cartographic Boundary Files - Shapefile
-This dataset provides the shapefile for US States-5m.
-
+We used four primary datasets in this analysis:
+1. The [Energy Efficiency and Renewable Energy's Alternative Fuels Dataset](https://afdc.energy.gov/stations/states) from U.S. Department of Energy provided alternative fueling station counts by state and fuel type, along with the vehicle registration counts.
+2. Income data was sourced from the [U.S. Bureau of Economic Analysis](https://apps.bea.gov/itable/?ReqID=70&step=1&_gl=1*183o7fy*_ga*MTA2NTA5NzQzNS4xNzQ0NzQ1MTM1*_ga_J4698JNNFT*MTc0NTAwNzIyOS4zLjAuMTc0NTAwNzIyOS42MC4wLjA.#eyJhcHBpZCI6NzAsInN0ZXBzIjpbMSwyOV0sImRhdGEiOltbIlRhYmxlSWQiLCIyMSJdXX0=), which reports annual per capita personal income.
+3. Population estimates were taken from the [U.S. Census Bureau](https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html), covering state-level populations for each year in the study period.
+4. The U.S. Census Bureau also provided the [Cartographic Boundary Shapefiles](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html) for all the states-5m.
 
 ## Setting up the Session
 ```{r setup, message=FALSE, warning=FALSE, results='hide'}
@@ -49,12 +41,14 @@ library(readxl)
 library(sf)
 library(leaflet)
 library(mapview); mapviewOptions(fgb = FALSE)
+
+here()
 ```
 
 ## Importing and Cleaning Datasets
 
 ```{r datasets, message=FALSE, warning=FALSE}
-#EV Registration Data
+#1. EV Registration Data
 LDV_Data <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
 
 #Renaming columns 
@@ -67,7 +61,7 @@ LDV_Clean <- LDV_Data %>%
 
 #write.csv(LDV_Clean, "Data/Processed/LDV_Clean.csv", row.names = FALSE)
 
-#Income Data
+#2. Income Data
 Income_Data <- read.csv("Data/Raw/Average Income Data by State.csv")
 
 #Cleaning data
@@ -76,12 +70,13 @@ Income_Clean <- Income_Data %>%
 
 #write.csv(Income_Clean, "Data/Processed/Avg_Income_Clean.csv", row.names = FALSE)
 
-#Population Data
+#3. Population Data
 Pop_Data <- read_excel("Data/Raw/Population 2020-2024.xlsx")
 
 #Renaming the columns
 colnames(Pop_Data) [c(2,3,4,5)] <- c("Pop_2020","Pop_2021","Pop_2022","Pop_2023")
 
+#Wrangling the data
 Pop_clean <- Pop_Data %>%
   pivot_longer(cols = starts_with("Pop_"), names_to = "Year", names_prefix = "Pop_", values_to = "Population") %>%
   select(Year, State, Population) %>%
@@ -89,40 +84,36 @@ Pop_clean <- Pop_Data %>%
 
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
 
-#Fuel Stations 
+#4. Fuel Stations 
 Fuel_Stations <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
 stringsAsFactors = TRUE)
 
 #Selecting columns
 Fuel_Stations <- Fuel_Stations[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
 
-#Converting the date format to dmy and retaining year of installation of the station
+#Formatting dates
 Fuel_Stations$Open.Date <- dmy(Fuel_Stations$Open.Date)
 Fuel_Stations$Open.Date <- year(Fuel_Stations$Open.Date)
 Fuel_Stations <- subset(Fuel_Stations, Open.Date >= 2016 & Open.Date <= 2023)
 
-#Converting all the state accronyms to full state names 
+#Converting acronyms to state names 
+Fuel_Stations$State <- toupper(trimws(Fuel_Stations$State)) 
 
-Fuel_Stations$State <- toupper(trimws(Fuel_Stations$State)) # First, ensure everything is uppercase and trimmed
-
-state_abbr <- state.abb # Create a lookup: abbreviation → full name
+state_abbr <- state.abb 
 state_names <- state.name 
 
 state_abbr <- c(state_abbr, "DC")
-state_names <- c(state_names, "District of Columbia") # Adding DC manually
+state_names <- c(state_names, "District of Columbia") #Added DC manually
 
-Fuel_Stations$State <- state_names[match(Fuel_Stations$State, state_abbr)] # Mapping the abbreviations to full names
+Fuel_Stations$State <- state_names[match(Fuel_Stations$State, state_abbr)] 
 
-# Grouping the stations as per states and year and renaming the processed file
-
-Fuel_Stations_Summary <- Fuel_Stations_PW %>%
+#Regrouping the stations 
+Fuel_Stations_Summary <- Fuel_Stations %>%
   group_by(Open.Date, State) %>%
   summarise(Number_of_Stations = n(), .groups = 'drop') %>%
-  rename(Year = Open.Date)  # Rename for joining
+  rename(Year = Open.Date)
 
 #write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
-
-
 ```
 
 ## Creating Data Plots
