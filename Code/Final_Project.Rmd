@@ -1,7 +1,7 @@
 ---
 title: "Factors Affecting EV Adoption in the U.S."
-author: "Nataraj.Patankar.Tiwari.Wavre"
-date: "2025-04-24"
+author: "H.Nataraj, A.Patankar, P.Tiwari, P.Wavre"
+date: "24 April 2025"
 output: html_document
 editor_options: 
   chunk_output_type: console
@@ -17,11 +17,32 @@ The global transition toward EVs is accelerating, driven by government policies,
 Analyzing the relationship between EV sales trends and fuel station infrastructure is essential for effective infrastructure planning, informed policymaking, and targeted investment strategies. As EV adoption accelerates, the demand for traditional gas stations is expected to decline, accompanied by a corresponding rise in the need for robust EV charging infrastructure. Understanding these evolving trends can guide strategic decisions on how the U.S. can best adapt its fueling networks to support the clean energy transition. Furthermore, examining demographic factors such as population density and income levels can help determine optimal locations for deploying EV charging stations.
 
 ## Information on Datasets
-We used four primary datasets in this analysis:
-1. The [Energy Efficiency and Renewable Energy's Alternative Fuels Dataset](https://afdc.energy.gov/stations/states) from U.S. Department of Energy provided alternative fueling station counts by state and fuel type, along with the vehicle registration counts.
-2. Income data was sourced from the [U.S. Bureau of Economic Analysis](https://apps.bea.gov/itable/?ReqID=70&step=1&_gl=1*183o7fy*_ga*MTA2NTA5NzQzNS4xNzQ0NzQ1MTM1*_ga_J4698JNNFT*MTc0NTAwNzIyOS4zLjAuMTc0NTAwNzIyOS42MC4wLjA.#eyJhcHBpZCI6NzAsInN0ZXBzIjpbMSwyOV0sImRhdGEiOltbIlRhYmxlSWQiLCIyMSJdXX0=), which reports annual per capita personal income.
-3. Population estimates were taken from the [U.S. Census Bureau](https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html), covering state-level populations for each year in the study period.
-4. The U.S. Census Bureau also provided the [Cartographic Boundary Shapefiles](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html) for all the states-5m.
+We used five primary datasets in this analysis:
+```{r datasets table, message=FALSE, warning=FALSE, echo=FALSE}
+#Dataset info
+dataset_info <- data.frame(
+  Dataset = c("Vehicle Registration Counts", 
+              "Average Income by State", 
+              "Population",
+              "Alternative Fueling Station Counts",
+              "Cartographic Boundary Shapefiles"),
+  Source = c("[Alternative Fuels Data Center](https://afdc.energy.gov/vehicle-registration)",
+             "[Bureau of Economic Analysis](https://apps.bea.gov/itable/?ReqID=70&step=1&_gl=1*183o7fy*_ga*MTA2NTA5NzQzNS4xNzQ0NzQ1MTM1*_ga_J4698JNNFT*MTc0NTAwNzIyOS4zLjAuMTc0NTAwNzIyOS42MC4wLjA.#eyJhcHBpZCI6NzAsInN0ZXBzIjpbMSwyOV0sImRhdGEiOltbIlRhYmxlSWQiLCIyMSJdXX0=)",
+             "[U.S. Census Bureau](https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html)",
+             "[Alternative Fuels Data Center](https://afdc.energy.gov/stations/states)",
+             "[U.S. Census Bureau](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html)"),
+  Years = c("2016–2023", "2016–2023", "2020–2024","2016-2023","NA")
+)
+
+#Converting dataset info into a table
+library(knitr)
+kable(dataset_info, format = "markdown")
+
+#1. The [Energy Efficiency and Renewable Energy's Alternative Fuels Dataset](https://afdc.energy.gov/stations/states) from U.S. Department of Energy provided alternative fueling station counts by state and fuel type, along with the vehicle registration counts.
+#2. Income data was sourced from the [U.S. Bureau of Economic Analysis](), which reports annual per capita personal income.
+#3. Population estimates were taken from the [U.S. Census Bureau](), covering state-level populations for each year in the study period.
+#4. The U.S. Census Bureau also provided the [Cartographic Boundary Shapefiles]() for all the states-5m.
+```
 
 ## Setting up the Session
 ```{r setup, message=FALSE, warning=FALSE, results='hide'}
@@ -42,12 +63,13 @@ library(sf)
 library(leaflet)
 library(mapview); mapviewOptions(fgb = FALSE)
 
+#Check working directory
 here()
 ```
 
 ## Importing and Cleaning Datasets
 
-```{r datasets, message=FALSE, warning=FALSE}
+```{r datasets, message=FALSE, warning=FALSE, results='hide'}
 #1. EV Registration Data
 LDV_Data <- read_excel("Data/Raw/2016-2023 LDV Registration Data.xlsx")
 
@@ -66,9 +88,8 @@ Income_Data <- read.csv("Data/Raw/Average Income Data by State.csv")
 
 #Cleaning data
 Income_Clean <- Income_Data %>%
-  mutate(State = str_trim(str_remove(State, "\\*")))
-
-#write.csv(Income_Clean, "Data/Processed/Avg_Income_Clean.csv", row.names = FALSE)
+  mutate(State = str_trim(str_remove(State, "\\*"))) %>%
+  rename("Avg_Income" = "Per.capita.personal.income..dollars.")
 
 #3. Population Data
 Pop_Data <- read_excel("Data/Raw/Population 2020-2024.xlsx")
@@ -79,7 +100,7 @@ colnames(Pop_Data) [c(2,3,4,5)] <- c("Pop_2020","Pop_2021","Pop_2022","Pop_2023"
 #Wrangling the data
 Pop_Clean <- Pop_Data %>%
   pivot_longer(cols = starts_with("Pop_"), names_to = "Year", names_prefix = "Pop_", values_to = "Population") %>%
-  select(Year, States, Population) %>%
+  select(Year, State, Population) %>%
   mutate(Year = as.numeric(Year))
 
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
@@ -114,13 +135,18 @@ Fuel_Stations_Summary <- Fuel_Stations %>%
   rename(Year = Open.Date)
 
 #write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
+
+#Data for Maps
+States_sf <- st_read( here('Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
+Stations_Data <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
+stringsAsFactors = TRUE)
 ```
 
 ## Analysis 0: Visualizing Data through Graphs
 ### Summary Plots for EV Registration Data
 Explain what we're doing here for each graph
 
-```{r summary plots, message=FALSE, warning=FALSE}
+```{r summary plots, message=FALSE, warning=FALSE, fig.width=14, fig.height=8}
 #Plots of EV registrations
 ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
   geom_line(size = 1) +
@@ -145,6 +171,9 @@ LDV_Clean %>%
   ) +
   theme_minimal(base_size = 14)
 
+```
+
+``` {r california plot, message=FALSE, warning=FALSE}
 #Plotting California separately 
 ggplot(filter(LDV_Clean, State == "California"), 
        aes(x = Year, y = `Total_EV`)) +
@@ -163,18 +192,13 @@ ggplot(filter(LDV_Clean, State == "California"),
 Explain what we're doing here (Creating a map of Charging Stations all of US - Includes Mainland USA, Alaska and Hawaii)
 
 ```{r maps, message=FALSE, warning=FALSE}
-#Reading data
-States_sf <- st_read( here('Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
-Stations_Data <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
-stringsAsFactors = TRUE)
-
 #
 bbox_us <- st_bbox(c(xmin = -179, xmax = -66, ymin = 18.5, ymax = 72), crs = st_crs(States_sf))
 States_sf_cropped <- st_crop(States_sf, bbox_us)
 
 #
 mapviewOptions(basemaps = "OpenStreetMap")
-mapview(States_sf_cropped)
+#mapview(States_sf_cropped)
 
 #Selecting required columns and removing rows which do not have valid latitude and longitude data
 Stations_Map <- Stations_Data %>%
@@ -197,7 +221,7 @@ Stations.sf <- Stations_Map %>%
 Plot_EVStationLocations <- ggplot()+
   geom_sf(data = States_sf, fill="white", size = 0.5) +
   geom_sf(data = Stations.sf, color = "red", size = 0.2)+
-  ggtitle("EV Station Locations in the US")+
+  ggtitle("EV Station Locations in the U.S.")+
   coord_sf(
     xlim = c(-179, -66), 
     ylim = c(18.5, 72),    
@@ -212,7 +236,7 @@ Write one line about why
 #
 bbox_us2 <- st_bbox(c(xmin = -125, xmax = -66, ymin = 24, ymax = 50), crs = st_crs(States_sf))
 States_sf_cropped2 <- st_crop(States_sf, bbox_us2)
-mapview(States_sf_cropped2)
+#mapview(States_sf_cropped2)
 
 #Selecting required columns and removing rows which do not have valid latitude and longitude data
 Mainland_Map <- Stations_Data %>%
@@ -233,7 +257,7 @@ Stations.sf2 <- Mainland_Map %>%
 Plot_EVStationLocations2 <- ggplot()+
   geom_sf(data = States_sf, fill="white", size = 0.5) +
   geom_sf(data = Stations.sf2, color = "red", size = 0.2)+
-  ggtitle("EV Station Locations in the Mainland US")+
+  ggtitle("EV Station Locations in the Mainland U.S.")+
   coord_sf(
     xlim = c(-125, -66), 
     ylim = c(24, 50),    
@@ -243,6 +267,79 @@ Plot_EVStationLocations2
 
 > Analysis: we see that 
 
+\newpage
 
+## Analysis 1: Effect of Various Factors on EV Sales
+### Number of EVs vs Number of Charging Stations
 
+In this part of our analysis, we explore  
+
+```{r analysis 1 part 1}
+#Loading Packages
+```
+
+### Number of EVs vs Average income of States
+
+In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
+
+```{r analysis 1 part 2, warning=FALSE, error=FALSE, message=FALSE}
+
+#Wrangling Data
+EV_vs_Income <- left_join(LDV_Clean, Income_Clean, by = c("State", "Year"))
+
+#Correlation test
+EV.test <- cor.test(EV_vs_Income$Total_EV, EV_vs_Income$Avg_Income)
+EV.test
+
+#Plotting the data
+ggplot(EV_vs_Income, aes(x = Avg_Income, y = Total_EV)) +
+  geom_point(alpha = 0.6, color = "purple") +
+  geom_smooth(method = "lm", se = TRUE, color = "darkgreen", linewidth = 1.2) +
+  labs(
+    title = "Relationship Between Average Income and EV Registrations",
+    subtitle = "Across States (Total EVs = EV + PHEV)",
+    x = "Average Income (USD)",
+    y = "Total EV Registrations"
+  ) +
+  ylim(0,250000) +
+  theme_minimal()
+
+```
+
+> Analysis: We observe a moderate positive correlation between average income and EV registrations, with a Pearson correlation coefficient of 0.28 (p ≈ 4.83e-09). Although not as strong as the population relationship, this still indicates that higher-income states are more likely to have greater EV uptake. This aligns with expectations, as electric vehicles are often priced higher than conventional cars, and wealthier populations may have more disposable income and access to incentives for EV purchases.
+
+### Number of EVs vs Population of States
+
+In this part of our analysis, we explore whether the population of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
+
+```{r analysis 1 part 3, warning=FALSE, error=FALSE, message=FALSE}
+#Wrangling Data
+EV_vs_Pop <- left_join(LDV_Clean, Pop_Clean, by = c("Year", "State"))
+
+#Correlation test
+Pop.test <- cor.test(EV_vs_Pop$Total_EV, EV_vs_Pop$Population)
+Pop.test
+
+#Plotting the data
+ggplot(EV_vs_Pop, aes(x = Population, y = Total_EV)) +
+  geom_point(alpha = 0.8, color = "coral") +
+  geom_smooth(method = "lm", se = TRUE, color = "navy", linewidth = 1.2) +
+  labs(
+    title = "Relationship Between Population and EV Registrations",
+    subtitle = "Across States (Total EVs = EV + PHEV)",
+    x = "Population",
+    y = "Total EV Registrations"
+  ) +
+   ylim(0,250000) +
+  xlim(0,30000000) +
+  theme_minimal()
+
+```
+
+> Analysis: We can see that there is a strong positive relationship between a state's population and the number of EV registrations. This is supported by the Pearson correlation coefficient of 0.74 (p < 2.2e-16), suggesting that as population increases, EV registrations tend to rise proportionally. The trendline in the scatterplot confirms this upward trend, indicating that more populous states tend to have significantly higher EV adoption levels—likely due to larger urban areas, better infrastructure, and broader consumer bases.
+
+\newpage
+
+## Analysis 2: Predicting the Number of EV Stations based on EV Sales
+### Linear Regression Analysis
 
