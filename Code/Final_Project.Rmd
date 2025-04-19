@@ -77,9 +77,9 @@ Pop_Data <- read_excel("Data/Raw/Population 2020-2024.xlsx")
 colnames(Pop_Data) [c(2,3,4,5)] <- c("Pop_2020","Pop_2021","Pop_2022","Pop_2023")
 
 #Wrangling the data
-Pop_clean <- Pop_Data %>%
+Pop_Clean <- Pop_Data %>%
   pivot_longer(cols = starts_with("Pop_"), names_to = "Year", names_prefix = "Pop_", values_to = "Population") %>%
-  select(Year, State, Population) %>%
+  select(Year, States, Population) %>%
   mutate(Year = as.numeric(Year))
 
 #write.csv(Pop_clean, "Data/Processed/Population_Clean.csv", row.names = FALSE)
@@ -116,11 +116,12 @@ Fuel_Stations_Summary <- Fuel_Stations %>%
 #write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
 ```
 
-## Creating Data Plots
+## Analysis 0: Visualizing Data through Graphs
+### Summary Plots for EV Registration Data
+Explain what we're doing here for each graph
 
-```{r}
+```{r summary plots, message=FALSE, warning=FALSE}
 #Plots of EV registrations
-
 ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
   geom_line(size = 1) +
   labs(
@@ -131,6 +132,7 @@ ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
   ) +
   theme_minimal(base_size = 14)
 
+#Filtering the dataset for California
 LDV_Clean %>%
   filter(State != "California") %>%
   ggplot(aes(x = Year, y = `Total_EV`, color = State)) +
@@ -143,10 +145,10 @@ LDV_Clean %>%
   ) +
   theme_minimal(base_size = 14)
 
-# Plot California separately 
+#Plotting California separately 
 ggplot(filter(LDV_Clean, State == "California"), 
        aes(x = Year, y = `Total_EV`)) +
-  geom_line(color = "steelblue", size = 1) +
+  geom_line(color = "navy", size = 1) +
   labs(
     title = "EV Registrations in California (2016–2023)",
     x = "Year", y = "EV Registrations"
@@ -155,54 +157,43 @@ ggplot(filter(LDV_Clean, State == "California"),
 
 ```
 
+> Analysis: We can see that 
 
-```{r}
-# Creating GGPlot of Statewise Total EV Registrations
-ggplot(LDV_Clean, aes(x = Year, y = `Total_EV`, color = State)) +
-  geom_line(size = 1) +
-  labs(
-    title = "Total EV Registrations by State (2016–2023)",
-    x = "Year",
-    y = "Number of EVs Registered",
-    color = "State"
-  ) +
-  theme_minimal(base_size = 14)
+### Maps for Charging Stations Data
+Explain what we're doing here (Creating a map of Charging Stations all of US - Includes Mainland USA, Alaska and Hawaii)
 
-```
+```{r maps, message=FALSE, warning=FALSE}
+#Reading data
+States_sf <- st_read( here('Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
+Stations_Data <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
+stringsAsFactors = TRUE)
 
-```{r}
-#4 Creating a map of Charging Stations all of US - Includes Mainland USA, Alaska and Hawaii
-
-#Reading Datafile
-States_sf <- st_read( here('./Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
-
+#
 bbox_us <- st_bbox(c(xmin = -179, xmax = -66, ymin = 18.5, ymax = 72), crs = st_crs(States_sf))
 States_sf_cropped <- st_crop(States_sf, bbox_us)
 
+#
 mapviewOptions(basemaps = "OpenStreetMap")
 mapview(States_sf_cropped)
 
-# Reading Charging Station Data
-str(stations)
-
-#Selecting required columns and Removing Rows which do not have valid Latitude and Logitude data
-ev_stations2 <- stations %>%
+#Selecting required columns and removing rows which do not have valid latitude and longitude data
+Stations_Map <- Stations_Data %>%
   filter(Fuel.Type.Code == "ELEC") %>%
   select(Fuel.Type.Code, Latitude, Longitude) %>%
   filter(
     !is.na(Longitude), !is.na(Latitude),
     Latitude >= 18.5, Latitude <= 72,
-    Longitude <= -66, Longitude >= -179
-  )
+    Longitude <= -66, Longitude >= -179)
 
-write.csv(ev_stations2, "Data/Processed/EVStation_Locations.csv", row.names = FALSE)
+#write.csv(Stations_Map, "Data/Processed/EVStation_Locations.csv", row.names = FALSE)
 
-Stations.sf <- ev_stations2%>%
+#
+Stations.sf <- Stations_Map %>%
   st_as_sf(
     coords = c('Longitude','Latitude'),
-    crs=4269
-  )
+    crs=4269)
 
+#Mapping the data
 Plot_EVStationLocations <- ggplot()+
   geom_sf(data = States_sf, fill="white", size = 0.5) +
   geom_sf(data = Stations.sf, color = "red", size = 0.2)+
@@ -214,30 +205,31 @@ Plot_EVStationLocations <- ggplot()+
 Plot_EVStationLocations
 ```
 
+### Map of Mainland U.S.
+Write one line about why
 
-```{r}
-# Map of just mainland
-
+```{r clean map, message=FALSE, warning=FALSE}
+#
 bbox_us2 <- st_bbox(c(xmin = -125, xmax = -66, ymin = 24, ymax = 50), crs = st_crs(States_sf))
 States_sf_cropped2 <- st_crop(States_sf, bbox_us2)
 mapview(States_sf_cropped2)
 
-#Selecting required columns and Removing Rows which do not have valid Latitude and Logitude data
-ev_stations3 <- stations %>%
+#Selecting required columns and removing rows which do not have valid latitude and longitude data
+Mainland_Map <- Stations_Data %>%
   filter(Fuel.Type.Code == "ELEC") %>%
   select(Fuel.Type.Code, Latitude, Longitude) %>%
   filter(
     !is.na(Longitude), !is.na(Latitude),
     Latitude >= 24, Latitude <= 50,
-    Longitude <= -66, Longitude >= -125
-  )
+    Longitude <= -66, Longitude >= -125)
 
-Stations.sf2 <- ev_stations3%>%
+#
+Stations.sf2 <- Mainland_Map %>%
   st_as_sf(
     coords = c('Longitude','Latitude'),
-    crs=4269
-  )
+    crs=4269)
 
+#Mapping the data
 Plot_EVStationLocations2 <- ggplot()+
   geom_sf(data = States_sf, fill="white", size = 0.5) +
   geom_sf(data = Stations.sf2, color = "red", size = 0.2)+
@@ -248,4 +240,9 @@ Plot_EVStationLocations2 <- ggplot()+
     expand = FALSE)
 Plot_EVStationLocations2
 ```
+
+> Analysis: we see that 
+
+
+
 
