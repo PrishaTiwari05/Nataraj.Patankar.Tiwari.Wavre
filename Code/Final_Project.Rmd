@@ -2,7 +2,9 @@
 title: "Factors Affecting EV Adoption in the U.S."
 author: "H.Nataraj, A.Patankar, P.Tiwari, P.Wavre"
 date: "24 April 2025"
-output: html_document
+output: 
+  html_document:
+    toc: true
 editor_options: 
   chunk_output_type: console
 ---
@@ -59,6 +61,8 @@ library(ggforce)
 library(scales)
 library(dplyr)
 library(readxl)
+library(purrr)
+library(broom)
 library(sf)
 library(leaflet)
 library(mapview); mapviewOptions(fgb = FALSE)
@@ -272,10 +276,13 @@ Plot_EVStationLocations2
 ## Analysis 1: Effect of Various Factors on EV Sales
 ### Number of EVs vs Number of Charging Stations
 
-In this part of our analysis, we explore  
+In this part of our analysis, we explore whether the number of charging stations in a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
 ```{r analysis 1 part 1}
-#Loading Packages
+#Wrangling data
+Station_vs_EV <- left_join(
+  Fuel_Stations_Summary, LDV_Clean, by = c("Year", "State"))
+
 ```
 
 ### Number of EVs vs Average income of States
