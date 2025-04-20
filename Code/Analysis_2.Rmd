@@ -98,6 +98,11 @@ write.csv(Fuel_Station_and_Registrations_Combined, "Data/Processed/Fuel_Station_
 
 ##Correlation 
 ```{r}
+
+# Clean combined dataset for modeling
+Cleaned_EV_Station_Data <- Fuel_Station_and_Registrations_Combined %>%
+  filter(!is.na(Total_EV), !is.na(Number_of_Stations))
+
 #Correlation analysis
 cor_result <- cor(Cleaned_EV_Station_Data$Total_EV, Cleaned_EV_Station_Data$Number_of_Stations, method = "pearson")
 print(cor_result)
@@ -127,34 +132,40 @@ ggplot(Cleaned_EV_Station_Data, aes(x = Number_of_Stations, y = Total_EV)) +
 
 ##Data analysis and linear regression
 ```{r}
-# Step 1: Clean combined dataset for modeling
-Cleaned_EV_Station_Data <- Fuel_Station_and_Registrations_Combined %>%
-  filter(!is.na(Total_EV), !is.na(Number_of_Stations))
-  
 
-# Step 2: Project EV growth for 2024–2026
+#Projected EV growth for 2024–2026
 EV_Projections_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
   do({
     ev_model <- lm(Total_EV ~ Year, data = .)
     future_years <- data.frame(Year = 2024:2026)
-    predicted_evs <- predict(ev_model, newdata = future_years)
+    predicted_evs <- round(predict(ev_model, newdata = future_years))  # rounding to nearest integer
     data.frame(State = unique(.$State), Year = future_years$Year, Total_EV = predicted_evs)
   }) %>%
   ungroup()
 
-# Step 3: Predict required stations based on projected EV counts
+#Clean duplicates
+EV_Projections_By_State <- EV_Projections_By_State %>%
+  distinct(State, Year, .keep_all = TRUE)
+
+#Predict required stations based on projected EV counts
 Station_Predictions_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
-  do({
-    station_model <- lm(Number_of_Stations ~ Total_EV, data = .)
-    state_evs <- EV_Projections_By_State %>% filter(State == unique(.$State))
-    state_evs$Predicted_Stations <- predict(station_model, newdata = state_evs)
-    state_evs
-  }) %>%
-  ungroup()
+  nest() %>%
+  left_join(
+    EV_Projections_By_State %>% group_by(State) %>% nest(.key = "future"),
+    by = "State"
+  ) %>%
+  mutate(
+    model = map(data, ~ lm(Number_of_Stations ~ Total_EV, data = .x)),
+    predictions = map2(model, future, ~ mutate(.y, 
+                                               Total_EV = round(Total_EV),
+                                               Predicted_Stations = round(predict(.x, newdata = .y))))
+  ) %>%
+  select(State, predictions) %>%
+  unnest(predictions)
 
-# Step 4: Final predictions table
+# Final predictions table
 Final_Projections_2024_2026 <- Station_Predictions_By_State %>%
   select(State, Year, Total_EV, Predicted_Stations)
 ```
@@ -174,19 +185,28 @@ Projected_Data <- Station_Predictions_By_State %>%
 # Combine historical and projected data
 Combined_Data_For_Plot <- bind_rows(Historical_Data, Projected_Data)
 
-# Create the plot
-ggplot(Combined_Data_For_Plot, aes(x = Total_EV, y = Number_of_Stations, color = Source)) +
+# Filter for randomly selected states for representation
+Selected_States <- c("California", "District of Columbia", "Texas", "North Carolina", "Colorado")
+
+Filtered_Combined_Data <- Combined_Data_For_Plot %>%
+  filter(State %in% Selected_States)
+
+# Create the filtered plot
+ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color = Source)) +
   geom_point() +
   geom_line() +
-  facet_wrap(~ State, scales = "free") +
+  facet_wrap(~ State, scales = "free") +  # Use free_y and 2 columns
   labs(
     title = "EV Stations vs. Total EV Registrations (2016–2026)",
     x = "Total EV Registrations",
-    y = "Number of EV Stations",
+    y = "Number of EV Charging Stations",
     color = "Data Type"
   ) +
   theme_minimal() +
   theme(strip.text = element_text(face = "bold", size = 10))
 
+
 ```
+
+
 
