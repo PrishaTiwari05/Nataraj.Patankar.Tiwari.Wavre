@@ -40,10 +40,6 @@ dataset_info <- data.frame(
 library(knitr)
 kable(dataset_info, format = "markdown")
 
-#1. The [Energy Efficiency and Renewable Energy's Alternative Fuels Dataset](https://afdc.energy.gov/stations/states) from U.S. Department of Energy provided alternative fueling station counts by state and fuel type, along with the vehicle registration counts.
-#2. Income data was sourced from the [U.S. Bureau of Economic Analysis](), which reports annual per capita personal income.
-#3. Population estimates were taken from the [U.S. Census Bureau](), covering state-level populations for each year in the study period.
-#4. The U.S. Census Bureau also provided the [Cartographic Boundary Shapefiles]() for all the states-5m.
 ```
 
 ## Setting up the Session
@@ -69,6 +65,7 @@ library(mapview); mapviewOptions(fgb = FALSE)
 
 #Check working directory
 here()
+
 ```
 
 ## Importing and Cleaning Datasets
@@ -144,6 +141,7 @@ Fuel_Stations_Summary <- Fuel_Stations %>%
 States_sf <- st_read( here('Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
 Stations_Data <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
 stringsAsFactors = TRUE)
+
 ```
 
 ## Analysis 0: Visualizing Data through Graphs
@@ -193,14 +191,15 @@ ggplot(filter(LDV_Clean, State == "California"),
 > Analysis: We can see that 
 
 ### Maps for Charging Stations Data
+#### Map of Mainland U.S., Alaska, and Hawaii
 Explain what we're doing here (Creating a map of Charging Stations all of US - Includes Mainland USA, Alaska and Hawaii)
 
 ```{r maps, message=FALSE, warning=FALSE}
-#
+#Defining boundaries and cropping territories
 bbox_us <- st_bbox(c(xmin = -179, xmax = -66, ymin = 18.5, ymax = 72), crs = st_crs(States_sf))
 States_sf_cropped <- st_crop(States_sf, bbox_us)
 
-#
+#Setting mapview preferences
 mapviewOptions(basemaps = "OpenStreetMap")
 #mapview(States_sf_cropped)
 
@@ -215,7 +214,7 @@ Stations_Map <- Stations_Data %>%
 
 #write.csv(Stations_Map, "Data/Processed/EVStation_Locations.csv", row.names = FALSE)
 
-#
+#Converting data
 Stations.sf <- Stations_Map %>%
   st_as_sf(
     coords = c('Longitude','Latitude'),
@@ -231,13 +230,14 @@ Plot_EVStationLocations <- ggplot()+
     ylim = c(18.5, 72),    
     expand = FALSE)
 Plot_EVStationLocations
+
 ```
 
-### Map of Mainland U.S.
+#### Map of Mainland U.S. only
 Write one line about why
 
 ```{r clean map, message=FALSE, warning=FALSE}
-#
+#Defining boundaries and cropping territories
 bbox_us2 <- st_bbox(c(xmin = -125, xmax = -66, ymin = 24, ymax = 50), crs = st_crs(States_sf))
 States_sf_cropped2 <- st_crop(States_sf, bbox_us2)
 #mapview(States_sf_cropped2)
@@ -251,7 +251,7 @@ Mainland_Map <- Stations_Data %>%
     Latitude >= 24, Latitude <= 50,
     Longitude <= -66, Longitude >= -125)
 
-#
+#Converting data
 Stations.sf2 <- Mainland_Map %>%
   st_as_sf(
     coords = c('Longitude','Latitude'),
@@ -267,6 +267,7 @@ Plot_EVStationLocations2 <- ggplot()+
     ylim = c(24, 50),    
     expand = FALSE)
 Plot_EVStationLocations2
+
 ```
 
 > Analysis: we see that 
@@ -282,13 +283,15 @@ In this part of our analysis, we explore whether the number of charging stations
 #Wrangling data
 Station_vs_EV <- left_join(
   Fuel_Stations_Summary, LDV_Clean, by = c("Year", "State"))
+Cleaned_EV_Station_Data <- Station_vs_EV %>%
+  filter(!is.na(Total_EV), !is.na(Number_of_Stations))
 
 #Correlation test
-Station.test <- cor.test(Station_vs_EV$Total_EV, Station_vs_EV$Number_of_Stations)
+Station.test <- cor.test(Cleaned_EV_Station_Data$Total_EV, Cleaned_EV_Station_Data$Number_of_Stations)
 Station.test
 
 #Plotting the data
-ggplot(Station_vs_EV, aes(x = Number_of_Stations, y = Total_EV)) +
+ggplot(Cleaned_EV_Station_Data, aes(x = Number_of_Stations, y = Total_EV)) +
   geom_point(alpha = 0.6, color = "mediumpurple") +
   geom_smooth(method = "lm", se = TRUE, color = "tomato", linewidth = 1.2) +
   labs(
@@ -310,7 +313,6 @@ ggplot(Station_vs_EV, aes(x = Number_of_Stations, y = Total_EV)) +
 In this part of our analysis, we explore whether the average income of a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
 ```{r analysis 1 part 2, warning=FALSE, error=FALSE, message=FALSE}
-
 #Wrangling Data
 EV_vs_Income <- left_join(LDV_Clean, Income_Clean, by = c("State", "Year"))
 
@@ -373,23 +375,22 @@ ggplot(EV_vs_Pop, aes(x = Population, y = Total_EV)) +
 In this analysis, 
 
 ```{r analysis 2, warning=FALSE, error=FALSE, message=FALSE}
-
-#Projected EV growth for 2024–2026
+#Projecting EV growth for 2024–2026 using LM
 EV_Projections_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
   do({
     ev_model <- lm(Total_EV ~ Year, data = .)
     future_years <- data.frame(Year = 2024:2026)
-    predicted_evs <- round(predict(ev_model, newdata = future_years))  # rounding to nearest integer
+    predicted_evs <- round(predict(ev_model, newdata = future_years)) 
     data.frame(State = unique(.$State), Year = future_years$Year, Total_EV = predicted_evs)
   }) %>%
   ungroup()
 
-#Clean duplicates
+#Cleaning duplicates
 EV_Projections_By_State <- EV_Projections_By_State %>%
   distinct(State, Year, .keep_all = TRUE)
 
-#Predict required stations based on projected EV counts
+#Predicting required stations based on projected EV counts
 Station_Predictions_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
   nest() %>%
@@ -406,9 +407,53 @@ Station_Predictions_By_State <- Cleaned_EV_Station_Data %>%
   select(State, predictions) %>%
   unnest(predictions)
 
-# Final predictions table
+#Final predictions table
 Final_Projections_2024_2026 <- Station_Predictions_By_State %>%
   select(State, Year, Total_EV, Predicted_Stations)
+
 ```
 
+### Plotting the Predictions
+```{r prediction plots, warning=FALSE, error=FALSE, message=FALSE, fig.width=14, fig.height=8}
+#Preparing historical data for plotting
+Historical_Data <- Station_vs_EV %>%
+  select(State, Year, Total_EV, Number_of_Stations) %>%
+  mutate(Source = "Historical")
+
+#Preparing projected data for plotting
+Projected_Data <- Station_Predictions_By_State %>%
+  rename(Number_of_Stations = Predicted_Stations) %>%
+  mutate(Source = "Projected")
+
+#Combining historical and projected data
+Combined_Data_For_Plot <- bind_rows(Historical_Data, Projected_Data)
+
+#Filtering for randomly selected states for representation
+Selected_States <- c("California", "District of Columbia", "Texas", "North Carolina", "Colorado")
+Filtered_Combined_Data <- Combined_Data_For_Plot %>%
+  filter(State %in% Selected_States)
+
+#Creating the filtered plot
+ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color = Source)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~ State, scales = "free") +
+  labs(
+    title = "EV Stations vs Total EV Registrations (2016–2026)",
+    x = "Total EV Registrations",
+    y = "Number of EV Charging Stations",
+    color = "Data Type"
+  ) +
+  theme_minimal(base_size = 14) + 
+  theme(
+    strip.text = element_text(size = 16, face = "bold"),     
+    plot.title = element_text(size = 20, face = "bold"),     
+    axis.title = element_text(size = 16),                    
+    axis.text = element_text(size = 12),                     
+    legend.title = element_text(size = 14),                  
+    legend.text = element_text(size = 12))
+
+```
+
+> Analysis: 
 
