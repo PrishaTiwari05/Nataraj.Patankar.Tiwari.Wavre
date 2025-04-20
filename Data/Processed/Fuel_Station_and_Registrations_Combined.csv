@@ -1,0 +1,409 @@
+"Year","State","Number_of_Stations","Total_EV"
+2016,"Alabama",7,1400
+2016,"Arizona",38,9100
+2016,"Arkansas",4,700
+2016,"California",304,258200
+2016,"Colorado",51,9100
+2016,"Connecticut",70,4800
+2016,"Delaware",2,1000
+2016,"District of Columbia",16,1100
+2016,"Florida",104,21700
+2016,"Georgia",70,22000
+2016,"Hawaii",11,5400
+2016,"Idaho",15,1000
+2016,"Illinois",43,11800
+2016,"Indiana",16,3700
+2016,"Iowa",11,1600
+2016,"Kansas",34,1600
+2016,"Kentucky",10,1400
+2016,"Louisiana",13,900
+2016,"Maine",37,1300
+2016,"Maryland",77,8200
+2016,"Massachusetts",30,8800
+2016,"Michigan",34,13200
+2016,"Minnesota",20,4000
+2016,"Mississippi",8,300
+2016,"Missouri",48,3500
+2016,"Montana",9,400
+2016,"Nebraska",15,900
+2016,"Nevada",14,3400
+2016,"New Hampshire",17,1400
+2016,"New Jersey",26,9700
+2016,"New Mexico",8,1100
+2016,"New York",134,18200
+2016,"North Carolina",44,6500
+2016,"Ohio",44,7000
+2016,"Oklahoma",4,1300
+2016,"Oregon",78,12000
+2016,"Pennsylvania",45,8600
+2016,"Rhode Island",3,900
+2016,"South Carolina",9,2000
+2016,"Tennessee",40,4300
+2016,"Texas",98,19900
+2016,"Utah",4,4200
+2016,"Vermont",31,1500
+2016,"Virginia",80,7300
+2016,"Washington",73,21300
+2016,"West Virginia",3,400
+2016,"Wisconsin",17,5200
+2016,"Wyoming",6,200
+2017,"Alabama",28,1900
+2017,"Alaska",4,700
+2017,"Arizona",33,13000
+2017,"Arkansas",18,900
+2017,"California",294,349300
+2017,"Colorado",87,13200
+2017,"Connecticut",21,6900
+2017,"Delaware",16,1300
+2017,"District of Columbia",21,1500
+2017,"Florida",181,29300
+2017,"Georgia",79,19600
+2017,"Hawaii",19,7100
+2017,"Idaho",13,1500
+2017,"Illinois",58,16000
+2017,"Indiana",21,5100
+2017,"Iowa",13,2100
+2017,"Kansas",25,2300
+2017,"Kentucky",20,1900
+2017,"Louisiana",21,1300
+2017,"Maine",18,1800
+2017,"Maryland",74,10900
+2017,"Massachusetts",22,13500
+2017,"Michigan",32,14500
+2017,"Minnesota",37,5400
+2017,"Mississippi",16,500
+2017,"Missouri",107,5400
+2017,"Montana",4,600
+2017,"Nebraska",8,1300
+2017,"Nevada",25,5100
+2017,"New Hampshire",3,2100
+2017,"New Jersey",32,15000
+2017,"New Mexico",9,1700
+2017,"New York",136,26500
+2017,"North Carolina",79,9200
+2017,"North Dakota",2,300
+2017,"Ohio",51,9300
+2017,"Oklahoma",18,2100
+2017,"Oregon",47,16000
+2017,"Pennsylvania",35,11900
+2017,"Rhode Island",3,1200
+2017,"South Carolina",27,2800
+2017,"South Dakota",3,300
+2017,"Tennessee",32,5000
+2017,"Texas",102,27000
+2017,"Utah",17,6100
+2017,"Vermont",19,2300
+2017,"Virginia",73,11200
+2017,"Washington",90,30800
+2017,"West Virginia",36,500
+2017,"Wisconsin",17,6300
+2017,"Wyoming",13,200
+2018,"Alabama",15,2800
+2018,"Alaska",7,800
+2018,"Arizona",48,20300
+2018,"Arkansas",13,1400
+2018,"California",485,488500
+2018,"Colorado",105,19900
+2018,"Connecticut",30,10200
+2018,"Delaware",4,2000
+2018,"District of Columbia",28,2100
+2018,"Florida",193,44800
+2018,"Georgia",116,22900
+2018,"Hawaii",7,9000
+2018,"Idaho",5,2200
+2018,"Illinois",70,23500
+2018,"Indiana",39,7500
+2018,"Iowa",16,3100
+2018,"Kansas",11,3500
+2018,"Kentucky",15,2700
+2018,"Louisiana",14,1800
+2018,"Maine",23,2600
+2018,"Maryland",120,16800
+2018,"Massachusetts",76,21900
+2018,"Michigan",58,16500
+2018,"Minnesota",50,9700
+2018,"Mississippi",8,800
+2018,"Missouri",32,7700
+2018,"Montana",12,900
+2018,"Nebraska",7,1900
+2018,"Nevada",23,8000
+2018,"New Hampshire",20,3200
+2018,"New Jersey",46,24200
+2018,"New Mexico",8,2600
+2018,"New York",169,39800
+2018,"North Carolina",71,13800
+2018,"North Dakota",9,300
+2018,"Ohio",56,13600
+2018,"Oklahoma",16,5000
+2018,"Oregon",74,22200
+2018,"Pennsylvania",62,17500
+2018,"Rhode Island",33,1900
+2018,"South Carolina",29,4200
+2018,"South Dakota",8,500
+2018,"Tennessee",32,6800
+2018,"Texas",195,39200
+2018,"Utah",66,9000
+2018,"Vermont",36,3100
+2018,"Virginia",100,18000
+2018,"Washington",108,43900
+2018,"West Virginia",5,700
+2018,"Wisconsin",21,8200
+2018,"Wyoming",9,400
+2019,"Alabama",18,3800
+2019,"Alaska",4,1100
+2019,"Arizona",74,29100
+2019,"Arkansas",18,1900
+2019,"California",555,597000
+2019,"Colorado",123,28500
+2019,"Connecticut",53,12600
+2019,"Delaware",5,2600
+2019,"District of Columbia",39,3100
+2019,"Florida",216,60700
+2019,"Georgia",91,27400
+2019,"Hawaii",25,11700
+2019,"Idaho",14,3100
+2019,"Illinois",90,30900
+2019,"Indiana",29,9800
+2019,"Iowa",23,4000
+2019,"Kansas",29,4400
+2019,"Kentucky",18,3700
+2019,"Louisiana",9,2400
+2019,"Maine",26,3500
+2019,"Maryland",111,23200
+2019,"Massachusetts",142,27000
+2019,"Michigan",59,19000
+2019,"Minnesota",58,13500
+2019,"Mississippi",10,1100
+2019,"Missouri",57,9900
+2019,"Montana",6,1200
+2019,"Nebraska",16,2400
+2019,"Nevada",44,11500
+2019,"New Hampshire",9,4100
+2019,"New Jersey",102,31900
+2019,"New Mexico",15,3500
+2019,"New York",360,51000
+2019,"North Carolina",105,19700
+2019,"North Dakota",6,400
+2019,"Ohio",102,18800
+2019,"Oklahoma",38,5000
+2019,"Oregon",100,29200
+2019,"Pennsylvania",138,23200
+2019,"Rhode Island",24,2400
+2019,"South Carolina",31,5600
+2019,"South Dakota",8,700
+2019,"Tennessee",51,9300
+2019,"Texas",185,56500
+2019,"Utah",68,12400
+2019,"Vermont",30,3700
+2019,"Virginia",103,24800
+2019,"Washington",177,56500
+2019,"West Virginia",2,1000
+2019,"Wisconsin",36,10000
+2019,"Wyoming",4,400
+2020,"Alabama",32,5000
+2020,"Alaska",15,1300
+2020,"Arizona",89,40000
+2020,"Arkansas",13,2400
+2020,"California",2783,690800
+2020,"Colorado",254,35500
+2020,"Connecticut",45,15200
+2020,"Delaware",21,3400
+2020,"District of Columbia",28,4000
+2020,"Florida",301,80600
+2020,"Georgia",190,32900
+2020,"Hawaii",36,13900
+2020,"Idaho",13,4000
+2020,"Illinois",134,39000
+2020,"Indiana",31,12300
+2020,"Iowa",48,4900
+2020,"Kansas",11,5500
+2020,"Kentucky",24,4700
+2020,"Louisiana",14,3200
+2020,"Maine",30,4700
+2020,"Maryland",145,29900
+2020,"Massachusetts",375,36600
+2020,"Michigan",85,23100
+2020,"Minnesota",69,17100
+2020,"Mississippi",15,1500
+2020,"Missouri",82,12000
+2020,"Montana",13,1500
+2020,"Nebraska",19,3100
+2020,"Nevada",38,15200
+2020,"New Hampshire",11,5200
+2020,"New Jersey",84,43200
+2020,"New Mexico",32,4500
+2020,"New York",587,65200
+2020,"North Carolina",114,25500
+2020,"North Dakota",23,500
+2020,"Ohio",109,24000
+2020,"Oklahoma",111,5200
+2020,"Oregon",96,34600
+2020,"Pennsylvania",143,30300
+2020,"Rhode Island",33,3200
+2020,"South Carolina",43,7400
+2020,"South Dakota",2,900
+2020,"Tennessee",64,12100
+2020,"Texas",349,72600
+2020,"Utah",134,16400
+2020,"Vermont",29,4500
+2020,"Virginia",131,31700
+2020,"Washington",182,68900
+2020,"West Virginia",6,1300
+2020,"Wisconsin",38,12200
+2020,"Wyoming",2,600
+2021,"Alabama",43,8000
+2021,"Alaska",15,1800
+2021,"Arizona",323,56200
+2021,"Arkansas",46,4200
+2021,"California",5802,878400
+2021,"Colorado",519,53100
+2021,"Connecticut",62,22500
+2021,"Delaware",54,5000
+2021,"District of Columbia",101,6200
+2021,"Florida",590,127800
+2021,"Georgia",494,47600
+2021,"Hawaii",73,18700
+2021,"Idaho",28,6000
+2021,"Illinois",284,54800
+2021,"Indiana",80,17900
+2021,"Iowa",83,7300
+2021,"Kansas",220,7800
+2021,"Kentucky",52,7300
+2021,"Louisiana",12,5200
+2021,"Maine",70,7200
+2021,"Maryland",332,42800
+2021,"Massachusetts",1037,52700
+2021,"Michigan",290,34700
+2021,"Minnesota",147,23900
+2021,"Mississippi",13,2400
+2021,"Missouri",515,17200
+2021,"Montana",5,2700
+2021,"Nebraska",72,4700
+2021,"Nevada",161,23700
+2021,"New Hampshire",30,7500
+2021,"New Jersey",187,66300
+2021,"New Mexico",61,7000
+2021,"New York",955,96500
+2021,"North Carolina",302,38700
+2021,"North Dakota",12,800
+2021,"Ohio",320,34300
+2021,"Oklahoma",47,14000
+2021,"Oregon",237,47200
+2021,"Pennsylvania",340,44600
+2021,"Rhode Island",108,4900
+2021,"South Carolina",78,12100
+2021,"South Dakota",14,1400
+2021,"Tennessee",216,18500
+2021,"Texas",690,111500
+2021,"Utah",288,24000
+2021,"Vermont",77,6600
+2021,"Virginia",320,46500
+2021,"Washington",549,91100
+2021,"West Virginia",21,2000
+2021,"Wisconsin",105,17000
+2021,"Wyoming",7,900
+2021,NA,2,NA
+2022,"Alabama",103,13100
+2022,"Alaska",14,2700
+2022,"Arizona",262,86200
+2022,"Arkansas",80,7600
+2022,"California",2615,1264700
+2022,"Colorado",399,83900
+2022,"Connecticut",165,35100
+2022,"Delaware",41,8200
+2022,"District of Columbia",56,9100
+2022,"Florida",703,213800
+2022,"Georgia",269,78200
+2022,"Hawaii",48,25400
+2022,"Idaho",25,9400
+2022,"Illinois",234,92600
+2022,"Indiana",125,27800
+2022,"Iowa",71,11100
+2022,"Kansas",47,11900
+2022,"Kentucky",50,12000
+2022,"Louisiana",60,8800
+2022,"Maine",120,10700
+2022,"Maryland",278,69000
+2022,"Massachusetts",611,79900
+2022,"Michigan",414,57400
+2022,"Minnesota",123,36200
+2022,"Mississippi",21,4000
+2022,"Missouri",106,28300
+2022,"Montana",32,5000
+2022,"Nebraska",52,7500
+2022,"Nevada",105,41700
+2022,"New Hampshire",52,11800
+2022,"New Jersey",359,113800
+2022,"New Mexico",36,11000
+2022,"New York",926,144500
+2022,"North Carolina",248,64400
+2022,"North Dakota",9,1200
+2022,"Ohio",379,51900
+2022,"Oklahoma",40,27800
+2022,"Oregon",176,69500
+2022,"Pennsylvania",382,72800
+2022,"Rhode Island",66,7700
+2022,"South Carolina",89,20200
+2022,"South Dakota",16,2200
+2022,"Tennessee",137,30900
+2022,"Texas",713,191800
+2022,"Utah",123,38200
+2022,"Vermont",67,9500
+2022,"Virginia",251,78300
+2022,"Washington",337,135500
+2022,"West Virginia",32,3300
+2022,"Wisconsin",132,25700
+2022,"Wyoming",17,1400
+2022,NA,6,NA
+2023,"Alabama",110,18800
+2023,"Alaska",5,3600
+2023,"Arizona",256,115400
+2023,"Arkansas",116,10300
+2023,"California",2675,1667300
+2023,"Colorado",467,127600
+2023,"Connecticut",425,50000
+2023,"Delaware",50,12200
+2023,"District of Columbia",59,11800
+2023,"Florida",644,312200
+2023,"Georgia",320,115100
+2023,"Hawaii",40,32900
+2023,"Idaho",42,13100
+2023,"Illinois",244,133000
+2023,"Indiana",153,39000
+2023,"Iowa",73,15100
+2023,"Kansas",81,16900
+2023,"Kentucky",59,17200
+2023,"Louisiana",67,12200
+2023,"Maine",95,15000
+2023,"Maryland",326,103400
+2023,"Massachusetts",614,117600
+2023,"Michigan",378,79400
+2023,"Minnesota",162,53200
+2023,"Mississippi",44,5600
+2023,"Missouri",238,40800
+2023,"Montana",28,7100
+2023,"Nebraska",49,10700
+2023,"Nevada",128,58000
+2023,"New Hampshire",53,16500
+2023,"New Jersey",363,175700
+2023,"New Mexico",79,15200
+2023,"New York",804,223600
+2023,"North Carolina",373,93900
+2023,"North Dakota",21,1800
+2023,"Ohio",348,74400
+2023,"Oklahoma",48,55800
+2023,"Oregon",291,93200
+2023,"Pennsylvania",443,109100
+2023,"Rhode Island",38,11500
+2023,"South Carolina",153,29900
+2023,"South Dakota",28,3000
+2023,"Tennessee",227,44200
+2023,"Texas",716,285400
+2023,"Utah",124,53000
+2023,"Vermont",51,13500
+2023,"Virginia",363,111700
+2023,"Washington",582,193300
+2023,"West Virginia",21,4600
+2023,"Wisconsin",131,37400
+2023,"Wyoming",25,1900
+2023,NA,1,NA
