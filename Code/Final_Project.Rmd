@@ -278,12 +278,32 @@ Plot_EVStationLocations2
 
 In this part of our analysis, we explore whether the number of charging stations in a state is correlated to the number of electric vehicles sold in that state. To do so, we will start by cleaning our data, conducting a correlation test, and then creating a scatter plot with a linear regression line. 
 
-```{r analysis 1 part 1}
+```{r analysis 1 part 1, warning=FALSE, error=FALSE, message=FALSE}
 #Wrangling data
 Station_vs_EV <- left_join(
   Fuel_Stations_Summary, LDV_Clean, by = c("Year", "State"))
 
+#Correlation test
+Station.test <- cor.test(Station_vs_EV$Total_EV, Station_vs_EV$Number_of_Stations)
+Station.test
+
+#Plotting the data
+ggplot(Station_vs_EV, aes(x = Number_of_Stations, y = Total_EV)) +
+  geom_point(alpha = 0.6, color = "mediumpurple") +
+  geom_smooth(method = "lm", se = TRUE, color = "tomato", linewidth = 1.2) +
+  labs(
+    title = "Relationship Between Charging Stations and EV Registrations",
+    subtitle = "Across States (Total EVs = EV + PHEV)",
+    x = "Number of EV Charging Stations",
+    y = "Total EV Registrations"
+  ) +
+  ylim(0,250000) +
+  xlim(0, 1000) +
+  theme_minimal()
+
 ```
+
+> Analysis: The correlation test reveals a strong positive relationship between the number of EV charging stations and the number of EV registrations across states (r = 0.80, p < 2.2e-16). This suggests that as the number of available charging stations increases, EV adoption also rises significantly. The strength of this correlation indicates that infrastructure availability may be a key enabler in encouraging EV uptake.
 
 ### Number of EVs vs Average income of States
 
@@ -349,4 +369,46 @@ ggplot(EV_vs_Pop, aes(x = Population, y = Total_EV)) +
 
 ## Analysis 2: Predicting the Number of EV Stations based on EV Sales
 ### Linear Regression Analysis
+
+In this analysis, 
+
+```{r analysis 2, warning=FALSE, error=FALSE, message=FALSE}
+
+#Projected EV growth for 2024–2026
+EV_Projections_By_State <- Cleaned_EV_Station_Data %>%
+  group_by(State) %>%
+  do({
+    ev_model <- lm(Total_EV ~ Year, data = .)
+    future_years <- data.frame(Year = 2024:2026)
+    predicted_evs <- round(predict(ev_model, newdata = future_years))  # rounding to nearest integer
+    data.frame(State = unique(.$State), Year = future_years$Year, Total_EV = predicted_evs)
+  }) %>%
+  ungroup()
+
+#Clean duplicates
+EV_Projections_By_State <- EV_Projections_By_State %>%
+  distinct(State, Year, .keep_all = TRUE)
+
+#Predict required stations based on projected EV counts
+Station_Predictions_By_State <- Cleaned_EV_Station_Data %>%
+  group_by(State) %>%
+  nest() %>%
+  left_join(
+    EV_Projections_By_State %>% group_by(State) %>% nest(.key = "future"),
+    by = "State"
+  ) %>%
+  mutate(
+    model = map(data, ~ lm(Number_of_Stations ~ Total_EV, data = .x)),
+    predictions = map2(model, future, ~ mutate(.y, 
+                                               Total_EV = round(Total_EV),
+                                               Predicted_Stations = round(predict(.x, newdata = .y))))
+  ) %>%
+  select(State, predictions) %>%
+  unnest(predictions)
+
+# Final predictions table
+Final_Projections_2024_2026 <- Station_Predictions_By_State %>%
+  select(State, Year, Total_EV, Predicted_Stations)
+```
+
 
