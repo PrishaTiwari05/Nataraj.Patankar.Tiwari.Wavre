@@ -3,6 +3,8 @@ title: "Analysis_2"
 author: "Nataraj.Patankar.Tiwari.Wavre"
 date: "2025-04-16"
 output: pdf_document
+editor_options:
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -17,6 +19,8 @@ library(purrr)
 library(broom)
 library(tidyr)
 library(ggplot2)
+library(corrplot)
+
 ```
 
 ## R Markdown
@@ -25,6 +29,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
+#Data import
 ```{r}
 EV_Registrations_PW <- read_excel(
   path = here("Data/Raw/2016-2023 LDV Registration Data.xlsx"),
@@ -35,87 +40,48 @@ Fuel_Stations_PW <- read.csv(
 file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
 stringsAsFactors = TRUE
 )
-
-
 ```
 
-## Data cleaning and filtering of EV registration
+## EV registration: Data cleaning and filtering of 
 
 ```{r}
 EV_Registrations_Subset_PW <- EV_Registrations_PW %>%
-  select(`Year`, `State`, `Electric (EV)`, `Plug-In Hybrid Electric (PHEV)`)
-
-EV_Registrations_Subset_PW <- EV_Registrations_Subset_PW %>%
-  arrange(Year)
+  select(Year, State, `Electric (EV)`, `Plug-In Hybrid Electric (PHEV)`) %>%
+  arrange(Year) %>%
+  mutate(`Total_EV` = `Electric (EV)` + `Plug-In Hybrid Electric (PHEV)`)
 
 ```
 
 ## Data cleaning and filtering of charging stations
 
 ```{r}
-
-# Keep only the required columns
-Fuel_Stations_PW <- Fuel_Stations_PW[, c("Station.Name", "State", "Latitude", "Longitude", "Open.Date")]
-
-Fuel_Stations_PW$Open.Date <- dmy(Fuel_Stations_PW$Open.Date)
-
-Fuel_Stations_PW$Open.Date <- year(Fuel_Stations_PW$Open.Date)
-
-Fuel_Stations_PW <- subset(Fuel_Stations_PW, Open.Date >= 2016 & Open.Date <= 2023)
-
-# First, ensure everything is uppercase and trimmed
-Fuel_Stations_PW$State <- toupper(trimws(Fuel_Stations_PW$State))
-
-# Create a lookup: abbreviation → full name
-state_abbr <- state.abb
-state_names <- state.name
-
-# Add DC manually
-state_abbr <- c(state_abbr, "DC")
-state_names <- c(state_names, "District of Columbia")
-
-# Map the abbreviations to full names
-Fuel_Stations_PW$State <- state_names[match(Fuel_Stations_PW$State, state_abbr)]
-```
-
-## Data Wrangling
-
-```{r}
-
-# Adding a new column with EV + PHEV count. 
-EV_Registrations_Subset_PW$`Total EVs` <- 
-  EV_Registrations_Subset_PW$`Electric (EV)` + 
-  EV_Registrations_Subset_PW$`Plug-In Hybrid Electric (PHEV)`
-
-```
-
-```{r}
-
-Station_Counts <- Fuel_Stations_PW %>%
-  group_by(Open.Date, State) %>%
+Fuel_Stations_Summary <- Fuel_Stations_PW %>%
+  select(Station.Name, State, Latitude, Longitude, Open.Date) %>%
+  mutate(
+    Open.Date = year(dmy(Open.Date)),
+    State = toupper(trimws(State)),
+    # Full state name mapping including DC
+    State = {
+      abbr <- c(state.abb, "DC")
+      names <- c(state.name, "District of Columbia")
+      names[match(State, abbr)]
+    }
+  ) %>%
+  filter(Open.Date >= 2016 & Open.Date <= 2023) %>%
+  group_by(Year = Open.Date, State) %>%
   summarise(Number_of_Stations = n(), .groups = 'drop')
 
 ```
 
+
+##Combining data:
 ```{r}
-
-# 1. Summarize station counts by Year and State
-Fuel_Stations_Summary <- Fuel_Stations_PW %>%
-  group_by(Open.Date, State) %>%
-  summarise(Number_of_Stations = n(), .groups = 'drop') %>%
-  rename(Year = Open.Date)  # Rename for joining
-
-# 2. Select required columns from EV registrations
 EV_Summary <- EV_Registrations_Subset_PW %>%
-  select(Year, State, `Total EVs`)
+  select(Year, State, `Total_EV`)
 
-# 3. Join on Year and State
 Fuel_Station_and_Registrations_Combined <- left_join(
-  Fuel_Stations_Summary,
-  EV_Summary,
-  by = c("Year", "State")
+  Fuel_Stations_Summary, EV_Summary, by = c("Year", "State")
 )
-
 ```
 
 ##Putting processed data into folder
@@ -125,63 +91,90 @@ write.csv(EV_Summary, "Data/Processed/EV_Summary.csv", row.names = FALSE)
 
 write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
 
+write.csv(Fuel_Station_and_Registrations_Combined, "Data/Processed/Fuel_Station_and_Registrations_Combined.csv", row.names = FALSE)
+
+```
+
+##Correlation 
+```{r}
+#Correlation analysis
+cor_result <- cor(Cleaned_EV_Station_Data$Total_EV, Cleaned_EV_Station_Data$Number_of_Stations, method = "pearson")
+print(cor_result)
+
+#The correlation is high i.e. 0.8, it suggests a strong positive relationship: more stations = more EVs.
+
+
+# Visualize with corrplot
+cor_matrix <- Cleaned_EV_Station_Data %>%
+  select(Total_EV, Number_of_Stations) %>%
+  cor()
+
+corrplot(cor_matrix, method = "circle", type = "upper", tl.col = "black", addCoef.col = "black")
+
+#Scatter plot with trend line using ggplot
+ggplot(Cleaned_EV_Station_Data, aes(x = Number_of_Stations, y = Total_EV)) +
+  geom_point(alpha = 0.6, color = "steelblue") +
+  geom_smooth(method = "lm", color = "darkred", se = TRUE) +
+  labs(
+    title = "Relationship Between EV Stations and Total EV Registrations",
+    x = "Number of EV Charging Stations",
+    y = "Total EV Registrations"
+  ) +
+  theme_minimal()
 ```
 
 
 ##Data analysis and linear regression
 ```{r}
-# Step 1: Clean data
-df <- Fuel_Station_and_Registrations_Combined %>%
-  filter(!is.na(`Total EVs`), !is.na(Number_of_Stations)) %>%
-  rename(Total_EVs = `Total EVs`)
+# Step 1: Clean combined dataset for modeling
+Cleaned_EV_Station_Data <- Fuel_Station_and_Registrations_Combined %>%
+  filter(!is.na(Total_EV), !is.na(Number_of_Stations))
+  
 
-# Step 2: Estimate EV registration growth for each state
-ev_projections <- df %>%
+# Step 2: Project EV growth for 2024–2026
+EV_Projections_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
   do({
-    model <- lm(Total_EVs ~ Year, data = .)
-    new_years <- data.frame(Year = 2024:2026)
-    preds <- predict(model, newdata = new_years)
-    data.frame(State = unique(.$State), Year = new_years$Year, Total_EVs = preds)
+    ev_model <- lm(Total_EV ~ Year, data = .)
+    future_years <- data.frame(Year = 2024:2026)
+    predicted_evs <- predict(ev_model, newdata = future_years)
+    data.frame(State = unique(.$State), Year = future_years$Year, Total_EV = predicted_evs)
   }) %>%
   ungroup()
 
-# Step 3: Predict Number of Stations for projected EVs
-station_predictions <- df %>%
+# Step 3: Predict required stations based on projected EV counts
+Station_Predictions_By_State <- Cleaned_EV_Station_Data %>%
   group_by(State) %>%
   do({
-    model <- lm(Number_of_Stations ~ Total_EVs, data = .)
-    new_data <- ev_projections %>% filter(State == unique(.$State))
-    new_data$Predicted_Stations <- predict(model, newdata = new_data)
-    new_data
+    station_model <- lm(Number_of_Stations ~ Total_EV, data = .)
+    state_evs <- EV_Projections_By_State %>% filter(State == unique(.$State))
+    state_evs$Predicted_Stations <- predict(station_model, newdata = state_evs)
+    state_evs
   }) %>%
   ungroup()
 
-# Step 4: Final output
-Predictions_2024_2026 <- station_predictions %>%
-  select(State, Year, Total_EVs, Predicted_Stations)
-
-head(Predictions_2024_2026)
+# Step 4: Final predictions table
+Final_Projections_2024_2026 <- Station_Predictions_By_State %>%
+  select(State, Year, Total_EV, Predicted_Stations)
 ```
 
 ##Graph plotting
 ```{r}
-
-# Combine original with future predictions
-historical_data <- Fuel_Station_and_Registrations_Combined %>%
-  select(State, Year, `Total EVs`, Number_of_Stations) %>%
+# Prepare historical data for plotting
+Historical_Data <- Fuel_Station_and_Registrations_Combined %>%
+  select(State, Year, Total_EV, Number_of_Stations) %>%
   mutate(Source = "Historical")
 
-predicted_data <- station_predictions %>%
+# Prepare projected data for plotting
+Projected_Data <- Station_Predictions_By_State %>%
   rename(Number_of_Stations = Predicted_Stations) %>%
   mutate(Source = "Projected")
 
-combined_plot_data <- bind_rows(
-  historical_data,
-  predicted_data
-)
+# Combine historical and projected data
+Combined_Data_For_Plot <- bind_rows(Historical_Data, Projected_Data)
 
-ggplot(combined_plot_data, aes(x = `Total EVs`, y = Number_of_Stations, color = Source)) +
+# Create the plot
+ggplot(Combined_Data_For_Plot, aes(x = Total_EV, y = Number_of_Stations, color = Source)) +
   geom_point() +
   geom_line() +
   facet_wrap(~ State, scales = "free") +
@@ -195,3 +188,4 @@ ggplot(combined_plot_data, aes(x = `Total EVs`, y = Number_of_Stations, color = 
   theme(strip.text = element_text(face = "bold", size = 10))
 
 ```
+
