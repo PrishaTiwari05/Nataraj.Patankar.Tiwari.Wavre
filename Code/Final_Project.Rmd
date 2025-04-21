@@ -1,7 +1,7 @@
 ---
 title: "Factors Affecting EV Adoption in the U.S."
 author: "H.Nataraj, A.Patankar, P.Tiwari, P.Wavre"
-date: "24 April 2025"
+date: "21 April 2025"
 output: 
   html_document:
     toc: true
@@ -137,7 +137,7 @@ Fuel_Stations_Summary <- Fuel_Stations %>%
 
 #write.csv(Fuel_Stations_Summary, "Data/Processed/Fuel_Stations_Summary.csv", row.names = FALSE)
 
-#Data for Maps
+#5. Data for Maps
 States_sf <- st_read( here('Data/Raw/cb_2018_us_state_5m/cb_2018_us_state_5m.shp'))
 Stations_Data <- read.csv(file = here("Data/Raw/Fuel_Stations_Historical_Data.csv"),
 stringsAsFactors = TRUE)
@@ -146,8 +146,7 @@ stringsAsFactors = TRUE)
 
 ## Analysis 0: Visualizing Data through Graphs
 ### Summary Plots for EV Registration Data
-In the following plots we visualize the growth of EV Registrations year on year from 2016-2023 for all US States. We also plot the graph thrice, first with all States on the same plot, second, all states without California and third, only California. California has the highest EV registrations and the plot without California aids in better visualization for other states. 
-
+In the following plots, we visualize the growth of EV registrations year-on-year from 2016-2023 for all U.S. States. We also plot the graph three times, first with all States on the same plot, second with all states except California and third, only California. California has the highest EV registrations and the plot without California aids in better visualization for other states. 
 
 ```{r summary plots, message=FALSE, warning=FALSE, fig.width=14, fig.height=8}
 #Plots of EV registrations
@@ -193,8 +192,7 @@ ggplot(filter(LDV_Clean, State == "California"),
 
 ### Maps for Charging Stations Data
 #### Map of Mainland U.S., Alaska, and Hawaii
-In this section we create a map of all Charging Stations in US.
-In the first plot we includes Mainland USA, Alaska and Hawaii. 
+In this section we create a map of all the charging stations in U.S. The first plot includes Mainland U.S., Alaska and Hawaii. 
 
 ```{r maps, message=FALSE, warning=FALSE}
 #Defining boundaries and cropping territories
@@ -236,7 +234,7 @@ Plot_EVStationLocations
 ```
 
 #### Map of Mainland U.S. only
-In the second plot we show only the Mainland US for better visualization.
+In the second plot, we only show Mainland U.S. for better visualization.
 
 ```{r clean map, message=FALSE, warning=FALSE}
 #Defining boundaries and cropping territories
@@ -272,8 +270,7 @@ Plot_EVStationLocations2
 
 ```
 
-> Analysis: We see that North East US and US West Coast has high density of EV Charging Stations. Hawaii being a decarbonization forward state also has EV Charging Stations, however Alaska has very few stations. Central US and Mid-west areas of US have sparse density of EV Charging stations.
-We also see that cities have a higher concentration of stations, this might be due to cities having higher income/ population which may lead to higher EV penetration.
+> Analysis: We see that North East U.S. and U.S. West Coast have a high density of EV charging stations. Hawaii being a decarbonization-forward state also has EV charging stations. However, Alaska has very few stations. Central U.S. and Mid-west areas of U.S. have sparse density of EV charging stations. We also see that cities have a higher concentration of stations, this might be due to cities having higher income/population which may lead to higher EV penetration.
 
 \newpage
 
@@ -375,7 +372,7 @@ ggplot(EV_vs_Pop, aes(x = Population, y = Total_EV)) +
 ## Analysis 2: Predicting the Number of EV Stations based on EV Sales
 ### Linear Regression Analysis
 
-In this analysis, we predict the number of EV registrations and EV charging stations from year 2024 to 2026 for all states. We have data availability for state wise EV registrations till 2023. We perform linear regression modeling on the historic data of EV registration and number of charging stations to make the predictions.  
+In this analysis, we predict the number of EV registrations and EV charging stations from year 2024 to 2026 for all U.S. states. We have data availability for state-wise EV registrations till 2023. We perform linear regression modeling on the historic data of EV registrations and number of charging stations to make the predictions.  
 
 ```{r analysis 2, warning=FALSE, error=FALSE, message=FALSE}
 #Projecting EV growth for 2024–2026 using LM
@@ -458,5 +455,11 @@ ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color =
 
 ```
 
-> Analysis: In the randomly chosen states - California, Colarodo, District of Columbia, North Carolina and Texas, the projected yearly number of EV registrations decrease for all states for 2024 but project an increasing trend for 2025 and 2026. The projected number of charging station installations increase each year from 2024 to 2026 for all states except for North Carolina where the projected number of charging stations installation decrease in 2024 as compared to 2023 and then show an increasing trend growing in number. 
+> Analysis: In the randomly chosen states - California, Colarodo, District of Columbia, North Carolina and Texas, the projected yearly number of EV registrations decrease for all states for 2024, but project an increasing trend for 2025 and 2026. The projected number of charging station installations increase each year from 2024 to 2026 for all states except for North Carolina where the projected number of charging station installations decrease in 2024 as compared to 2023, and then show an increasing trend growing in number of installations. 
+
+## GitHub Link
+
+Attached below is a link to our project repository in GitHub. We hope you enjoy reading our project as much as we enjoyed working on it!
+
+> Link: https://github.com/PrishaTiwari05/Nataraj.Patankar.Tiwari.Wavre
 
