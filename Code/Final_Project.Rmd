@@ -439,9 +439,9 @@ ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color =
   geom_line() +
   facet_wrap(~ State, scales = "free") +
   labs(
-    title = "EV Stations vs Yearly EV Registrations (2016–2026)",
+    title = "Yearly EV Station Installations vs Yearly EV Registrations (2016–2026)",
     x = "Yearly EV Registrations",
-    y = "Yearly Number of EV Charging Station Installations",
+    y = "Yearly EV Station Installations",
     color = "Data Type"
   ) +
   theme_minimal(base_size = 14) + 
