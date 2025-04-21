@@ -146,7 +146,8 @@ stringsAsFactors = TRUE)
 
 ## Analysis 0: Visualizing Data through Graphs
 ### Summary Plots for EV Registration Data
-Explain what we're doing here for each graph
+In the following plots we visualize the growth of EV Registrations year on year from 2016-2023 for all US States. We also plot the graph thrice, first with all States on the same plot, second, all states without California and third, only California. California has the highest EV registrations and the plot without California aids in better visualization for other states. 
+
 
 ```{r summary plots, message=FALSE, warning=FALSE, fig.width=14, fig.height=8}
 #Plots of EV registrations
@@ -188,11 +189,12 @@ ggplot(filter(LDV_Clean, State == "California"),
 
 ```
 
-> Analysis: We can see that 
+> Analysis: We can see that California has the highest number of EV registrations followed by Florida. 
 
 ### Maps for Charging Stations Data
 #### Map of Mainland U.S., Alaska, and Hawaii
-Explain what we're doing here (Creating a map of Charging Stations all of US - Includes Mainland USA, Alaska and Hawaii)
+In this section we create a map of all Charging Stations in US.
+In the first plot we includes Mainland USA, Alaska and Hawaii. 
 
 ```{r maps, message=FALSE, warning=FALSE}
 #Defining boundaries and cropping territories
@@ -234,7 +236,7 @@ Plot_EVStationLocations
 ```
 
 #### Map of Mainland U.S. only
-Write one line about why
+In the second plot we show only the Mainland US for better visualization.
 
 ```{r clean map, message=FALSE, warning=FALSE}
 #Defining boundaries and cropping territories
@@ -270,7 +272,7 @@ Plot_EVStationLocations2
 
 ```
 
-> Analysis: we see that 
+> Analysis: We see that North East US and US West Coast has high density of EV Charging Stations. Hawaii being a decarbonization forward state also has EV Charging Stations, however Alaska has very few stations. Central US and Mid-west areas of US have sparse density of EV Charging stations.
 
 \newpage
 
