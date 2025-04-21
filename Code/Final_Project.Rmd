@@ -273,6 +273,7 @@ Plot_EVStationLocations2
 ```
 
 > Analysis: We see that North East US and US West Coast has high density of EV Charging Stations. Hawaii being a decarbonization forward state also has EV Charging Stations, however Alaska has very few stations. Central US and Mid-west areas of US have sparse density of EV Charging stations.
+We also see that cities have a higher concentration of stations, this might be due to cities having higher income/ population which may lead to higher EV penetration.
 
 \newpage
 
