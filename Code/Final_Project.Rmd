@@ -375,7 +375,7 @@ ggplot(EV_vs_Pop, aes(x = Population, y = Total_EV)) +
 ## Analysis 2: Predicting the Number of EV Stations based on EV Sales
 ### Linear Regression Analysis
 
-In this analysis, 
+In this analysis, we predict the number of EV registrations and EV charging stations from year 2024 to 2026 for all states. We have data availability for state wise EV registrations till 2023. We perform linear regression modeling on the historic data of EV registration and number of charging stations to make the predictions.  
 
 ```{r analysis 2, warning=FALSE, error=FALSE, message=FALSE}
 #Projecting EV growth for 2024–2026 using LM
@@ -442,9 +442,9 @@ ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color =
   geom_line() +
   facet_wrap(~ State, scales = "free") +
   labs(
-    title = "EV Stations vs Total EV Registrations (2016–2026)",
-    x = "Total EV Registrations",
-    y = "Number of EV Charging Stations",
+    title = "EV Stations vs Yearly EV Registrations (2016–2026)",
+    x = "Yearly EV Registrations",
+    y = "Yearly Number of EV Charging Station Installations",
     color = "Data Type"
   ) +
   theme_minimal(base_size = 14) + 
@@ -458,5 +458,5 @@ ggplot(Filtered_Combined_Data, aes(x = Total_EV, y = Number_of_Stations, color =
 
 ```
 
-> Analysis: 
+> Analysis: In the randomly chosen states - California, Colarodo, District of Columbia, North Carolina and Texas, the projected yearly number of EV registrations decrease for all states for 2024 but project an increasing trend for 2025 and 2026. The projected number of charging station installations increase each year from 2024 to 2026 for all states except for North Carolina where the projected number of charging stations installation decrease in 2024 as compared to 2023 and then show an increasing trend growing in number. 
 
